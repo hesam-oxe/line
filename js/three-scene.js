@@ -4,10 +4,11 @@
    ۲) شبیه‌ساز: لاین نوری بزرگ با تغییر دمای رنگ و شدت نور
    ═══════════════════════════════════════════════════════════ */
 
-import * as THREE from 'three';
-import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+/* کتابخانه‌ها به‌صورت محلی میزبانی می‌شوند — بدون وابستگی به CDN خارجی */
+import * as THREE from './vendor/three.module.js';
+import { EffectComposer } from './vendor/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from './vendor/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from './vendor/addons/postprocessing/UnrealBloomPass.js';
 
 /* ── تنظیمات مشترک ── */
 const IS_MOBILE = matchMedia('(max-width: 768px)').matches;

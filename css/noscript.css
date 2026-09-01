@@ -1,0 +1,3 @@
+/* بدون جاوااسکریپت هم همه‌چیز باید دیده شود */
+[data-hero],[data-reveal]{ opacity:1 !important; transform:none !important; }
+.preloader{ display:none; }

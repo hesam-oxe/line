@@ -1,41 +1,141 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
+  <!-- ═══════════ امنیت: Content-Security-Policy سخت‌گیرانه ═══════════ -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https://images.unsplash.com; font-src 'self'; connect-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"/>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>لاین نوری استار | نور، امضای فضای شما</title>
-  <meta name="description" content="طراحی، تأمین و اجرای حرفه‌ای لاین نوری LED — فروش و اجرای نورخطی برای خانه، مغازه و پروژه‌های لوکس"/>
+  <meta name="referrer" content="strict-origin-when-cross-origin"/>
+
+  <!-- ═══════════ سئو ═══════════ -->
+  <title>لاین نوری استار | طراحی، فروش و اجرای لاین نوری LED در تهران</title>
+  <meta name="description" content="لاین نوری استار — طراحی، تأمین و اجرای تخصصی لاین نوری LED، نئون فلکس و پروفیل آلومینیومی در تهران. با شبیه‌ساز رنگ نور نتیجه را قبل از خرید ببینید؛ مشاوره رایگان."/>
+  <meta name="keywords" content="لاین نوری, لاین نوری استار, نورپردازی خطی, لاین نوری مخفی, نئون فلکس, پروفیل آلومینیومی, روسری نوری, اسپات مخفی, پروژکتور LED, نورپردازی ساختمان, فروش لاین نوری, قیمت لاین نوری"/>
+  <meta name="author" content="لاین نوری استار"/>
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+  <link rel="canonical" href="https://hesam-oxe.github.io/line/"/>
   <meta name="theme-color" content="#0a0a12"/>
 
-  <!-- ═══ فونت فارسی وزیرمتن ═══ -->
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;800;900&display=swap" rel="stylesheet"/>
+  <!-- ═══════════ Open Graph (فیسبوک / واتساپ / تلگرام) ═══════════ -->
+  <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="لاین نوری استار"/>
+  <meta property="og:locale" content="fa_IR"/>
+  <meta property="og:title" content="لاین نوری استار | نور، امضای فضای شما"/>
+  <meta property="og:description" content="طراحی، تأمین و اجرای تخصصی لاین نوری LED — با شبیه‌ساز رنگ نور، نتیجه را قبل از خرید ببینید."/>
+  <meta property="og:url" content="https://hesam-oxe.github.io/line/"/>
+  <meta property="og:image" content="https://hesam-oxe.github.io/line/assets/img/og-cover.jpg"/>
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+  <meta property="og:image:alt" content="لاین نوری استار — استودیوی نورپردازی خطی"/>
 
-  <!-- ═══ استایل‌ها ═══ -->
+  <!-- ═══════════ Twitter Card ═══════════ -->
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="لاین نوری استار | نور، امضای فضای شما"/>
+  <meta name="twitter:description" content="طراحی، تأمین و اجرای تخصصی لاین نوری LED — شبیه‌ساز رنگ نور + مشاوره رایگان."/>
+  <meta name="twitter:image" content="https://hesam-oxe.github.io/line/assets/img/og-cover.jpg"/>
+
+  <!-- ═══════════ آیکون و مانیفست ═══════════ -->
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg"/>
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png"/>
+  <link rel="manifest" href="manifest.webmanifest"/>
+
+  <!-- ═══════════ فونت محلی وزیرمتن (متغیر — بدون CDN) ═══════════ -->
+  <link rel="preload" href="assets/fonts/Vazirmatn-Variable.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="js/vendor/gsap.min.js" as="script"/>
   <link rel="stylesheet" href="css/base.css"/>
   <link rel="stylesheet" href="css/sections.css"/>
+  <link rel="stylesheet" href="css/enhance.css"/>
+  <noscript><link rel="stylesheet" href="css/noscript.css"/></noscript>
 
-  <!-- ═══ نقشه ایمپورت Three.js (ماژول) ═══ -->
-  <script type="importmap">
+  <!-- ═══════════ داده‌ی ساختاریافته: بیزینس + وب‌سایت + کاتالوگ محصولات ═══════════ -->
+  <script type="application/ld+json">
   {
-    "imports": {
-      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-    }
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": ["LocalBusiness", "HomeAndConstructionBusiness"],
+        "@id": "https://hesam-oxe.github.io/line/#business",
+        "name": "لاین نوری استار",
+        "alternateName": "Linenory Star",
+        "slogan": "نور، امضای فضای شما",
+        "url": "https://hesam-oxe.github.io/line/",
+        "logo": "https://hesam-oxe.github.io/line/assets/img/og-cover.jpg",
+        "image": "https://hesam-oxe.github.io/line/assets/img/og-cover.jpg",
+        "description": "طراحی، تأمین و اجرای تخصصی سیستم‌های لاین نوری LED، نئون فلکس، روسری نوری و پروفیل آلومینیومی در تهران و سراسر ایران.",
+        "telephone": "+98-912-123-4567",
+        "email": "info@linenory-star.ir",
+        "priceRange": "$$",
+        "currenciesAccepted": "IRR",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "خیابان ولیعصر",
+          "addressLocality": "تهران",
+          "addressRegion": "تهران",
+          "addressCountry": "IR"
+        },
+        "openingHoursSpecification": [{
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"],
+          "opens": "09:00",
+          "closes": "18:00"
+        }],
+        "areaServed": {"@type": "Country", "name": "ایران"},
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "محصولات لاین نوری استار",
+          "itemListElement": [
+            {"@type": "Offer", "itemOffered": {"@type": "Product", "name": "لاین نوری مخفی", "description": "نوار نور خطی با دید یکدست و بدون نقطه، مناسب سقف کاذب، دیوار و کابینت"}},
+            {"@type": "Offer", "itemOffered": {"@type": "Product", "name": "لاین نوری روسری", "description": "حلقه نوری دور تا دور سقف برای ایجاد عمق و شناوری در لابی و پذیرایی"}},
+            {"@type": "Offer", "itemOffered": {"@type": "Product", "name": "نئون فلکس", "description": "نئون انعطاف‌پذیر و ضد آب IP67 برای خطوط خلاقانه، کافه، ویترین و نما"}},
+            {"@type": "Offer", "itemOffered": {"@type": "Product", "name": "پروفیل آلومینیومی", "description": "پروفیل آلومینیومی با دیفیوزر اپال، خنک‌شونده و ماندگار"}},
+            {"@type": "Offer", "itemOffered": {"@type": "Product", "name": "اسپات مخفی", "description": "اسپات کوچک مخفی‌شونده برای کابینت، کتابخانه و ویترین"}},
+            {"@type": "Offer", "itemOffered": {"@type": "Product", "name": "پروژکتور LED", "description": "نورافکن LED پرقدرت برای نمای ساختمان، محوطه و فضای باز"}}
+          ]
+        }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://hesam-oxe.github.io/line/#website",
+        "url": "https://hesam-oxe.github.io/line/",
+        "name": "لاین نوری استار",
+        "inLanguage": "fa-IR",
+        "publisher": {"@id": "https://hesam-oxe.github.io/line/#business"}
+      }
+    ]
   }
   </script>
-
-  <!-- ═══ GSAP + ScrollTrigger ═══ -->
-  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 </head>
 <body>
+
+<!-- ═══ پرش به محتوا (دسترس‌پذیری) ═══ -->
+<a class="skip-link" href="#main">پرش به محتوای اصلی</a>
+
+<!-- ═══ پری‌لودر سینمایی ═══ -->
+<div class="preloader" id="preloader" aria-hidden="true">
+  <div class="pre-inner">
+    <svg class="pre-logo" viewBox="0 0 64 64" aria-hidden="true">
+      <rect x="9" y="27" width="46" height="10" rx="5" fill="url(#preGrad)"/>
+      <circle cx="32" cy="32" r="4.6" fill="#fff"/>
+      <defs>
+        <linearGradient id="preGrad" x1="9" y1="32" x2="55" y2="32">
+          <stop stop-color="#FFB800"/><stop offset=".55" stop-color="#00D4FF"/><stop offset="1" stop-color="#8B5CF6"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <div class="pre-bar"><i id="preFill"></i></div>
+    <span class="pre-pct" id="prePct">۰٪</span>
+  </div>
+  <span class="pre-tagline">نور، امضای فضای شما</span>
+</div>
+
+<!-- ═══ کرسر سفارشی (فقط دسکتاپ) ═══ -->
+<div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+<div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
 
 <!-- ═══════════════════ ۱) هدر شیشه‌ای چسبان ═══════════════════ -->
 <header class="site-header" id="siteHeader">
   <div class="container header-inner">
-    <a class="logo" href="#home" aria-label="لاین نوری استار">
+    <a class="logo" href="#home" aria-label="لاین نوری استار — بازگشت به بالا">
       <svg class="logo-mark" viewBox="0 0 40 40" fill="none" aria-hidden="true">
         <rect x="4" y="17" width="32" height="6" rx="3" fill="url(#lg1)"/>
         <rect x="10" y="4" width="6" height="32" rx="3" fill="url(#lg2)" opacity="0.85"/>
@@ -62,7 +162,10 @@
     </nav>
 
     <div class="header-actions">
-      <a class="phone-link" href="tel:+989123456789" dir="ltr">۰۹۱۲ ۱۲۳ ۴۵۶۷</a>
+      <a class="phone-link" href="tel:+989123456789" dir="ltr" aria-label="تماس تلفنی">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3h3l1.7 4.6-2.2 1.6a13.8 13.8 0 0 0 5.7 5.7l1.6-2.2L21 14.4v3A2.6 2.6 0 0 1 18.4 20 15.4 15.4 0 0 1 4 5.6 2.6 2.6 0 0 1 6.6 3z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        ۰۹۱۲ ۱۲۳ ۴۵۶۷
+      </a>
       <a class="btn btn-primary btn-sm" href="#contact">مشاوره رایگان</a>
       <button class="hamburger" id="hamburger" aria-label="باز کردن منو" aria-expanded="false">
         <span></span><span></span><span></span>
@@ -73,7 +176,7 @@
 
 <!-- کشوی منوی موبایل -->
 <div class="mobile-drawer" id="mobileDrawer" aria-hidden="true">
-  <nav class="drawer-nav">
+  <nav class="drawer-nav" aria-label="منوی موبایل">
     <a href="#home">خانه</a>
     <a href="#simulator">شبیه‌ساز نور</a>
     <a href="#services">خدمات</a>
@@ -82,11 +185,14 @@
     <a href="#contact">تماس</a>
   </nav>
   <a class="btn btn-primary drawer-cta" href="#contact">مشاوره رایگان</a>
-  <a class="drawer-phone" href="tel:+989123456789" dir="ltr">📱 ۰۹۱۲ ۱۲۳ ۴۵۶۷</a>
+  <a class="drawer-phone" href="tel:+989123456789" dir="ltr">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3h3l1.7 4.6-2.2 1.6a13.8 13.8 0 0 0 5.7 5.7l1.6-2.2L21 14.4v3A2.6 2.6 0 0 1 18.4 20 15.4 15.4 0 0 1 4 5.6 2.6 2.6 0 0 1 6.6 3z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+    ۰۹۱۲ ۱۲۳ ۴۵۶۷
+  </a>
 </div>
 <div class="drawer-backdrop" id="drawerBackdrop"></div>
 
-<main>
+<main id="main">
 
 <!-- ═══════════════════ ۲) هیرو — صحنه سه‌بعدی ═══════════════════ -->
 <section class="hero" id="home">
@@ -94,7 +200,10 @@
   <div class="hero-vignette" aria-hidden="true"></div>
 
   <div class="container hero-content">
-    <span class="hero-badge" data-hero>✦ تجربه‌ی نور سه‌بعدی · Linenory-Star</span>
+    <span class="hero-badge" data-hero>
+      <svg class="ic-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8L12 2z" fill="currentColor"/></svg>
+      تجربه‌ی نور سه‌بعدی · Linenory-Star
+    </span>
     <h1 class="hero-title">
       <span class="line" data-hero><span class="grad-text">نور،</span></span>
       <span class="line" data-hero>امضای فضای <span class="outline-text">شما</span></span>
@@ -105,7 +214,17 @@
     </p>
     <div class="hero-actions" data-hero>
       <a class="btn btn-primary" href="#products">مشاهده محصولات</a>
-      <a class="btn btn-ghost" href="#simulator">شبیه‌ساز نور ⚡</a>
+      <a class="btn btn-ghost" href="#simulator">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4.5 13.5H11L9.5 22 19 9.5h-6.5L13 2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        شبیه‌ساز نور
+      </a>
+    </div>
+    <div class="hero-mini" data-hero>
+      <span><i class="dot dot-gold" aria-hidden="true"></i>+۱۰ سال تجربه</span>
+      <span class="sep" aria-hidden="true"></span>
+      <span><i class="dot dot-cyan" aria-hidden="true"></i>+۵۰۰ پروژه اجراشده</span>
+      <span class="sep" aria-hidden="true"></span>
+      <span><i class="dot dot-violet" aria-hidden="true"></i>ضمانت اصالت کالا</span>
     </div>
   </div>
 
@@ -115,11 +234,23 @@
   </div>
 </section>
 
+<!-- ═══════════════════ نوار متحرک کلمات کلیدی (سئو + زیبایی) ═══════════════════ -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span class="marquee-chunk">
+      لاین نوری مخفی <i>✦</i> روسری نوری <i>✦</i> نئون فلکس <i>✦</i> پروفیل آلومینیومی <i>✦</i> اسپات مخفی <i>✦</i> پروژکتور LED <i>✦</i> نورپردازی نمای ساختمان <i>✦</i> نور مخفی سقف <i>✦</i>
+    </span>
+    <span class="marquee-chunk">
+      لاین نوری مخفی <i>✦</i> روسری نوری <i>✦</i> نئون فلکس <i>✦</i> پروفیل آلومینیومی <i>✦</i> اسپات مخفی <i>✦</i> پروژکتور LED <i>✦</i> نورپردازی نمای ساختمان <i>✦</i> نور مخفی سقف <i>✦</i>
+    </span>
+  </div>
+</div>
+
 <!-- ═══════════════════ ۳) شبیه‌ساز رنگ نور ═══════════════════ -->
 <section class="section simulator" id="simulator">
   <div class="container">
     <div class="section-head" data-reveal>
-      <span class="section-tag">⚡ ویـژگی تعاملی</span>
+      <span class="section-tag">ویـژگی تعاملی</span>
       <h2 class="section-title">شبیه‌ساز <span class="grad-text">رنگ نور</span></h2>
       <p class="section-desc">دما و شدت رنگ لاین نوری را همین‌جا تجربه کنید — دقیقاً همان چیزی که در فضای شما نصب می‌شود.</p>
     </div>
@@ -135,17 +266,17 @@
 
       <div class="sim-controls">
         <div class="sim-buttons" role="group" aria-label="انتخاب دمای رنگ">
-          <button class="sim-btn" data-mode="6500" data-name="مهتابی سرد" data-k="۶۵۰۰">
-            <i style="--c:#dcecff"></i>مهتابی سرد<small>۶۵۰۰K</small>
+          <button class="sim-btn" type="button" data-mode="6500" data-name="مهتابی سرد" data-k="۶۵۰۰">
+            <i class="dot dot-cool" aria-hidden="true"></i>مهتابی سرد<small>۶۵۰۰K</small>
           </button>
-          <button class="sim-btn active" data-mode="4500" data-name="نور طبیعی" data-k="۴۵۰۰">
-            <i style="--c:#fff2d9"></i>طبیعی<small>۴۵۰۰K</small>
+          <button class="sim-btn active" type="button" data-mode="4500" data-name="نور طبیعی" data-k="۴۵۰۰">
+            <i class="dot dot-warmwhite" aria-hidden="true"></i>طبیعی<small>۴۵۰۰K</small>
           </button>
-          <button class="sim-btn" data-mode="3000" data-name="نور گرم" data-k="۳۰۰۰">
-            <i style="--c:#ffbf66"></i>گرم<small>۳۰۰۰K</small>
+          <button class="sim-btn" type="button" data-mode="3000" data-name="نور گرم" data-k="۳۰۰۰">
+            <i class="dot dot-warm" aria-hidden="true"></i>گرم<small>۳۰۰۰K</small>
           </button>
-          <button class="sim-btn" data-mode="rgb" data-name="رنگین‌کمانی متحرک" data-k="RGB">
-            <i class="rgb-icon"></i>RGB<small>۷ رنگ</small>
+          <button class="sim-btn" type="button" data-mode="rgb" data-name="رنگین‌کمانی متحرک" data-k="RGB">
+            <i class="dot rgb-icon" aria-hidden="true"></i>RGB<small>۷ رنگ</small>
           </button>
         </div>
 
@@ -163,39 +294,39 @@
 <section class="section services" id="services">
   <div class="container">
     <div class="section-head" data-reveal>
-      <span class="section-tag">◈ خدمات ما</span>
+      <span class="section-tag">خدمات ما</span>
       <h2 class="section-title">از ایده تا <span class="grad-text">اجرای نور</span></h2>
       <p class="section-desc">چرخه کامل پروژه نورپردازی، زیر یک سقف و با تیمی متخصص.</p>
     </div>
 
     <div class="grid services-grid">
-      <article class="card glass service-card" data-reveal>
+      <article class="card glass service-card card-tilt" data-reveal>
         <div class="card-icon icon-gold">
-          <svg viewBox="0 0 24 24"><path d="M13 2 4.5 13.5H11L9.5 22 19 9.5h-6.5L13 2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4.5 13.5H11L9.5 22 19 9.5h-6.5L13 2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
         </div>
         <h3>تأمین و فروش لاین نوری</h3>
         <p>عرضه مستقیم لاین نوری، نئون فلکس و پروفیل با گارانتی اصالت کالا و کیفیت نور یکدست.</p>
       </article>
 
-      <article class="card glass service-card" data-reveal>
+      <article class="card glass service-card card-tilt" data-reveal>
         <div class="card-icon icon-cyan">
-          <svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7h6v6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7h6v6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
         <h3>طراحی نورپردازی</h3>
         <p>شبیه‌سازی حرفه‌ای صحنه نور، انتخاب دمای رنگ و جانمایی خطوط نور بر اساس پلان شما.</p>
       </article>
 
-      <article class="card glass service-card" data-reveal>
+      <article class="card glass service-card card-tilt" data-reveal>
         <div class="card-icon icon-violet">
-          <svg viewBox="0 0 24 24"><path d="M14.5 6.5a4 4 0 0 0-5.6 5L3 17.4V21h3.6l5.9-5.9a4 4 0 0 0 5-5.6L14.6 12l-2.6-2.6 2.5-2.9z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6.5a4 4 0 0 0-5.6 5L3 17.4V21h3.6l5.9-5.9a4 4 0 0 0 5-5.6L14.6 12l-2.6-2.6 2.5-2.9z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
         </div>
         <h3>اجرای پروژه</h3>
         <p>نصب تمیز و استاندارد توسط تیم فنی؛ بدون سیم اضافه، بدون نقطه‌ی تیره، تحویل کلید‌اصلی.</p>
       </article>
 
-      <article class="card glass service-card" data-reveal>
+      <article class="card glass service-card card-tilt" data-reveal>
         <div class="card-icon icon-gold">
-          <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 0-9 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M12 8v4l3 2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="18" cy="18" r="3.2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 0-9 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M12 8v4l3 2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="18" cy="18" r="3.2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
         </div>
         <h3>مشاوره رایگان</h3>
         <p>قبل از هر هزینه‌ای با کارشناس ما صحبت کنید؛ برآورد دقیق و شفاف، رایگان و بدون تعهد.</p>
@@ -208,84 +339,78 @@
 <section class="section products" id="products">
   <div class="container">
     <div class="section-head" data-reveal>
-      <span class="section-tag">◆ فروشگاه</span>
+      <span class="section-tag">فروشگاه</span>
       <h2 class="section-title">محصولات <span class="grad-text">پرفروش</span></h2>
       <p class="section-desc">پرفروش‌ترین لاین‌های نوری استار — آماده ارسال به سراسر کشور.</p>
     </div>
 
     <div class="grid products-grid">
-      <!-- محصول ۱ -->
-      <article class="card glass product-card" data-reveal>
+      <article class="card glass product-card card-tilt" data-reveal>
         <div class="product-img">
-          <img loading="lazy" src="https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&w=800&q=70" alt="لاین نوری مخفی نصب شده در سقف"/>
+          <img loading="lazy" width="800" height="550" src="https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&w=800&q=70" alt="لاین نوری مخفی نصب‌شده در سقف پذیرایی"/>
           <span class="product-badge">پرفروش</span>
         </div>
         <div class="product-body">
           <h3>لاین نوری مخفی</h3>
-          <p class="feature">✦ نور یکدست بدون نقطه — ایده‌آل سقف کاذب</p>
-          <a class="btn btn-outline btn-sm" data-product="لاین نوری مخفی" href="#">استعلام قیمت</a>
+          <p class="feature">نور یکدست بدون نقطه — ایده‌آل سقف کاذب و کابینت</p>
+          <button class="btn btn-outline btn-sm" type="button" data-product="لاین نوری مخفی">استعلام قیمت</button>
         </div>
       </article>
 
-      <!-- محصول ۲ -->
-      <article class="card glass product-card" data-reveal>
+      <article class="card glass product-card card-tilt" data-reveal>
         <div class="product-img">
-          <img loading="lazy" src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?auto=format&fit=crop&w=800&q=70" alt="لاین نوری روسری"/>
+          <img loading="lazy" width="800" height="550" src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?auto=format&fit=crop&w=800&q=70" alt="لاین نوری روسری دور سقف"/>
         </div>
         <div class="product-body">
           <h3>لاین نوری روسری</h3>
-          <p class="feature">✦ مناسب حریر و دکل سقف با پراش نور نرم</p>
-          <a class="btn btn-outline btn-sm" data-product="لاین نوری روسری" href="#">استعلام قیمت</a>
+          <p class="feature">حلقه نوری سقف با پراش نور نرم و احساس شناوری</p>
+          <button class="btn btn-outline btn-sm" type="button" data-product="لاین نوری روسری">استعلام قیمت</button>
         </div>
       </article>
 
-      <!-- محصول ۳ -->
-      <article class="card glass product-card" data-reveal>
+      <article class="card glass product-card card-tilt" data-reveal>
         <div class="product-img">
-          <img loading="lazy" src="https://images.unsplash.com/photo-1550985616-10810253b84d?auto=format&fit=crop&w=800&q=70" alt="نئون فلکس رنگی"/>
+          <img loading="lazy" width="800" height="550" src="https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=800&q=70" alt="نئون فلکس با خطوط نور بنفش خلاقانه"/>
           <span class="product-badge">ضد آب IP67</span>
         </div>
         <div class="product-body">
           <h3>نئون فلکس</h3>
-          <p class="feature">✦ خم‌شونده ۳۶۰ درجه، مناسب نمای ساختمان</p>
-          <a class="btn btn-outline btn-sm" data-product="نئون فلکس" href="#">استعلام قیمت</a>
+          <p class="feature">خم‌شونده ۳۶۰ درجه، مناسب نما و فضاهای خلاقانه</p>
+          <button class="btn btn-outline btn-sm" type="button" data-product="نئون فلکس">استعلام قیمت</button>
         </div>
       </article>
 
-      <!-- محصول ۴ -->
-      <article class="card glass product-card" data-reveal>
+      <article class="card glass product-card card-tilt" data-reveal>
         <div class="product-img">
-          <img loading="lazy" src="https://images.unsplash.com/photo-1519974719765-e6559eac2575?auto=format&fit=crop&w=800&q=70" alt="پروفیل آلومینیومی لاین نوری"/>
+          <img loading="lazy" width="800" height="550" src="https://images.unsplash.com/photo-1519974719765-e6559eac2575?auto=format&fit=crop&w=800&q=70" alt="پروفیل آلومینیومی لاین نوری"/>
         </div>
         <div class="product-body">
           <h3>پروفیل آلومینیومی</h3>
-          <p class="feature">✦ دفع حرارت بالا + پخش‌کننده یکنواخت نور</p>
-          <a class="btn btn-outline btn-sm" data-product="پروفیل آلومینیومی" href="#">استعلام قیمت</a>
+          <p class="feature">دفع حرارت بالا + پخش‌کننده یکنواخت نور</p>
+          <button class="btn btn-outline btn-sm" type="button" data-product="پروفیل آلومینیومی">استعلام قیمت</button>
         </div>
       </article>
 
-      <!-- محصول ۵ -->
-      <article class="card glass product-card" data-reveal>
+      <article class="card glass product-card card-tilt" data-reveal>
         <div class="product-img">
-          <img loading="lazy" src="https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=800&q=70" alt="اسپات مخفی سقفی"/>
+          <img loading="lazy" width="800" height="550" src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=800&q=70" alt="اسپات و نورپردازی مخفی اتاق خواب مدرن"/>
         </div>
         <div class="product-body">
           <h3>اسپات مخفی</h3>
-          <p class="feature">✦ نصب نامرئی در سقف کاذب گچی و کناف</p>
-          <a class="btn btn-outline btn-sm" data-product="اسپات مخفی" href="#">استعلام قیمت</a>
+          <p class="feature">نصب نامرئی در سقف کاذب گچی و کناف</p>
+          <button class="btn btn-outline btn-sm" type="button" data-product="اسپات مخفی">استعلام قیمت</button>
         </div>
       </article>
 
-      <!-- محصول ۶ -->
-      <article class="card glass product-card" data-reveal>
+      <article class="card glass product-card card-tilt" data-reveal>
         <div class="product-img">
-          <img loading="lazy" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=70" alt="پروژکتور LED نما"/>
+          <img loading="lazy" width="800" height="550" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=70" alt="پروژکتور LED نورپردازی نما"/>
           <span class="product-badge">نما و محوطه</span>
         </div>
         <div class="product-body">
           <h3>پروژکتور LED</h3>
-          <p class="feature">✦ توان بالا ۵۰ تا ۲۰۰ وات، مقاوم در برابر باران</p>
-          <a class="btn btn-outline btn-sm" data-product="پروژکتور LED" href="#">استعلام قیمت</a>
+          <p class="feature">توان بالا ۵۰ تا ۲۰۰ وات، مقاوم در برابر باران</p>
+          <button class="btn btn-outline btn-sm" type="button" data-product="پروژکتور LED">استعلام قیمت</button>
         </div>
       </article>
     </div>
@@ -296,26 +421,26 @@
 <section class="section portfolio" id="portfolio">
   <div class="container">
     <div class="section-head" data-reveal>
-      <span class="section-tag">▣ گالری اجرا</span>
+      <span class="section-tag">گالری اجرا</span>
       <h2 class="section-title">نمونه‌کارهای <span class="grad-text">شاخص</span></h2>
       <p class="section-desc">گزینه‌ای از پروژه‌های اجراشده — برای مشاهده بزرگ‌تر روی هر تصویر بزنید.</p>
     </div>
 
     <div class="portfolio-grid">
-      <figure class="portfolio-item" data-reveal>
-        <img loading="lazy" src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=900&q=70" alt="نورپردازی سوئیت هتل"/>
+      <figure class="portfolio-item" data-reveal tabindex="0" role="button" aria-label="بزرگ‌نمایی: سوئیت هتل پارس">
+        <img loading="lazy" width="900" height="1200" src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=900&q=70" alt="نورپردازی سوئیت هتل با لاین نوری گرم"/>
         <figcaption><b>سوئیت هتل پارس</b><span>نور سراسری و پرده نور با دمای ۳۰۰۰K</span></figcaption>
       </figure>
-      <figure class="portfolio-item" data-reveal>
-        <img loading="lazy" src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=900&q=70" alt="نورپردازی نشیمن لوکس"/>
+      <figure class="portfolio-item" data-reveal tabindex="0" role="button" aria-label="بزرگ‌نمایی: نشیمن لوکس آپارتمان">
+        <img loading="lazy" width="900" height="1200" src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=900&q=70" alt="نورپردازی نشیمن لوکس با نور مکمل"/>
         <figcaption><b>نشیمن لوکس آپارتمان</b><span>نور مکمل گرم + لاین نوری مخفی</span></figcaption>
       </figure>
-      <figure class="portfolio-item" data-reveal>
-        <img loading="lazy" src="https://images.unsplash.com/photo-1543946207-39bd91e70ca7?auto=format&fit=crop&w=900&q=70" alt="نورپردازی پله و راهرو"/>
+      <figure class="portfolio-item" data-reveal tabindex="0" role="button" aria-label="بزرگ‌نمایی: ویلای لواسان">
+        <img loading="lazy" width="900" height="1200" src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=900&q=70" alt="نورپردازی پله و فضای نشیمن ویلای مدرن"/>
         <figcaption><b>ویلای لواسان</b><span>نورپردازی پله و مسیر با سنسور حرکتی</span></figcaption>
       </figure>
-      <figure class="portfolio-item" data-reveal>
-        <img loading="lazy" src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=70" alt="نورپردازی نشیمن مدرن"/>
+      <figure class="portfolio-item" data-reveal tabindex="0" role="button" aria-label="بزرگ‌نمایی: پذیرایی مدرن سعادت‌آباد">
+        <img loading="lazy" width="900" height="1200" src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=70" alt="نورپردازی نشیمن مدرن با لاین خطی سقفی"/>
         <figcaption><b>پذیرایی مدرن سعادت‌آباد</b><span>ترکیب نور مکمل و لاین خطی سقفی</span></figcaption>
       </figure>
     </div>
@@ -326,7 +451,7 @@
 <section class="section stats" id="stats">
   <div class="container">
     <div class="section-head" data-reveal>
-      <span class="section-tag">✦ چــرا استار؟</span>
+      <span class="section-tag">چــرا استار؟</span>
       <h2 class="section-title">اعداد، خودشان <span class="grad-text">حرف می‌زنند</span></h2>
     </div>
 
@@ -355,34 +480,52 @@
 <section class="section cta" id="contact">
   <div class="container cta-wrap">
     <div class="cta-text" data-reveal>
-      <span class="section-tag">☎ شــروع همکاری</span>
+      <span class="section-tag">شــروع همکاری</span>
       <h2 class="section-title">مشاوره <span class="grad-text">رایگان</span> بگیرید</h2>
       <p>
         فرم را پر کنید؛ کارشناسان ما در کمتر از ۲۴ ساعت با شما تماس می‌گیرند.
         یا مستقیم در واتساپ پیام دهید — مشاوره، برآورد هزینه و طراحی اولیه <b>رایگان</b> است.
       </p>
       <ul class="cta-points">
-        <li>✔ بازدید و برداشت ابعاد در تهران، رایگان</li>
-        <li>✔ پیش‌فاکتور رسمی با گارانتی کالا</li>
-        <li>✔ اجرای تمیز و تحویل به‌موقع</li>
+        <li>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          بازدید و برداشت ابعاد در تهران، رایگان
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          پیش‌فاکتور رسمی با گارانتی کالا
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          اجرای تمیز و تحویل به‌موقع
+        </li>
       </ul>
     </div>
 
     <form class="cta-form glass" id="consultForm" data-reveal novalidate>
       <div class="field">
         <label for="fName">نام و نام خانوادگی</label>
-        <input id="fName" name="name" type="text" placeholder="مثلاً: سارا محمدی" required/>
+        <input id="fName" name="name" type="text" maxlength="80" autocomplete="name" placeholder="مثلاً: سارا محمدی" required/>
+        <small class="field-error" aria-live="polite"></small>
       </div>
       <div class="field">
         <label for="fPhone">شماره تماس</label>
-        <input id="fPhone" name="phone" type="tel" inputmode="tel" placeholder="۰۹۱۲ ـ ـ ـ ـ ـ ـ" required/>
+        <input id="fPhone" name="phone" type="tel" inputmode="tel" maxlength="16" autocomplete="tel" placeholder="۰۹۱۲ ـ ـ ـ ـ ـ ـ" required/>
+        <small class="field-error" aria-live="polite"></small>
       </div>
       <div class="field">
         <label for="fDesc">توضیح پروژه</label>
-        <textarea id="fDesc" name="desc" rows="4" placeholder="مثلاً: نورپردازی سقف پذیرایی ۲۵ متری با لاین نوری مخفی…"></textarea>
+        <textarea id="fDesc" name="desc" rows="4" maxlength="500" placeholder="مثلاً: نورپردازی سقف پذیرایی ۲۵ متری با لاین نوری مخفی…"></textarea>
       </div>
+
+      <!-- ═══ امنیت: تله ربات‌ها (Honeypot) — کاربر واقعی نمی‌بیند ═══ -->
+      <div class="hp-field" aria-hidden="true">
+        <label for="fWebsite">این فیلد را خالی بگذارید</label>
+        <input id="fWebsite" name="website" type="text" tabindex="-1" autocomplete="off"/>
+      </div>
+
       <button class="btn btn-primary btn-block" type="submit">ارسال درخواست مشاوره</button>
-      <p class="form-note">با ارسال فرم، به واتساپ ما هدایت می‌شوید.</p>
+      <p class="form-note">با ارسال فرم، پیام شما مستقیماً در واتساپ ما آماده ارسال می‌شود.</p>
     </form>
   </div>
 </section>
@@ -403,62 +546,95 @@
       </a>
       <p>مرجع تخصصی فروش و اجرای لاین نوری LED — از طراحی صحنه نور تا نصب نهایی، با ضمانت کالا و کیفیت اجرا.</p>
       <div class="socials">
-        <a href="#" aria-label="اینستاگرام"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="17.2" cy="6.8" r="1.2" fill="currentColor"/></svg></a>
-        <a href="#" aria-label="تلگرام"><svg viewBox="0 0 24 24"><path d="M21 4 3.4 10.8c-.9.3-.9 1.6.1 1.8l4.6 1.3 1.7 5.3c.3.8 1.3 1 1.9.4l2.6-2.6 4.8 3.5c.7.5 1.7.1 1.9-.7L23 5.3c.2-.9-.7-1.6-2-1.3z" transform="scale(0.9)" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></a>
-        <a href="https://wa.me/989123456789" aria-label="واتساپ"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M9 8.5c.4 2.8 3.7 6 6.5 6.5l1-1.8-2-1.2-1 .8c-.9-.5-1.8-1.4-2.3-2.3l.8-1-1.2-2-1.8 1z" fill="currentColor"/></svg></a>
+        <a href="https://wa.me/989123456789" target="_blank" rel="noopener noreferrer" aria-label="گفتگو در واتساپ">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M9 8.5c.4 2.8 3.7 6 6.5 6.5l1-1.8-2-1.2-1 .8c-.9-.5-1.8-1.4-2.3-2.3l.8-1-1.2-2-1.8 1z" fill="currentColor"/></svg>
+        </a>
+        <a href="tel:+989123456789" aria-label="تماس تلفنی">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3h3l1.7 4.6-2.2 1.6a13.8 13.8 0 0 0 5.7 5.7l1.6-2.2L21 14.4v3A2.6 2.6 0 0 1 18.4 20 15.4 15.4 0 0 1 4 5.6 2.6 2.6 0 0 1 6.6 3z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="mailto:info@linenory-star.ir" aria-label="ایمیل">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 7.5l8 5.5 8-5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
       </div>
     </div>
 
-    <div class="footer-col">
+    <nav class="footer-col" aria-label="دسترسی سریع">
       <h4>دسترسی سریع</h4>
+      <a href="#home">خانه</a>
       <a href="#simulator">شبیه‌ساز نور</a>
       <a href="#products">محصولات</a>
       <a href="#portfolio">نمونه‌کارها</a>
       <a href="#contact">مشاوره رایگان</a>
-    </div>
+    </nav>
 
-    <div class="footer-col">
+    <nav class="footer-col" aria-label="خدمات">
       <h4>خدمات</h4>
       <a href="#services">تأمین و فروش لاین نوری</a>
       <a href="#services">طراحی نورپردازی</a>
       <a href="#services">اجرای پروژه</a>
       <a href="#services">مشاوره تخصصی</a>
-    </div>
+    </nav>
 
     <div class="footer-col footer-contact">
       <h4>تماس با ما</h4>
-      <a href="tel:+989123456789" dir="ltr">📱 +98 912 123 4567</a>
-      <a href="mailto:info@linenory-star.ir" dir="ltr">✉ info@linenory-star.ir</a>
-      <span>📍 تهران، خیابان ولیعصر، برج نور، طبقه ۱۲</span>
-      <span>🕘 شنبه تا پنجشنبه ۹ تا ۱۸</span>
+      <a href="tel:+989123456789" dir="ltr">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3h3l1.7 4.6-2.2 1.6a13.8 13.8 0 0 0 5.7 5.7l1.6-2.2L21 14.4v3A2.6 2.6 0 0 1 18.4 20 15.4 15.4 0 0 1 4 5.6 2.6 2.6 0 0 1 6.6 3z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        +98 912 123 4567
+      </a>
+      <a href="mailto:info@linenory-star.ir" dir="ltr">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 7.5l8 5.5 8-5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        info@linenory-star.ir
+      </a>
+      <span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="10" r="2.6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+        تهران، خیابان ولیعصر، برج نور، طبقه ۱۲
+      </span>
+      <span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3.2 2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        شنبه تا پنجشنبه ۹ تا ۱۸
+      </span>
     </div>
   </div>
 
   <div class="footer-bottom">
     <div class="container">
       <span>© ۱۴۰۴ لاین نوری استار — تمامی حقوق محفوظ است.</span>
-      <span class="made">ساخته‌شده با <b>Three.js</b> + <b>GSAP</b> · نسخه دمو</span>
+      <span class="made">طراحی‌شده با <b>Three.js</b> + <b>GSAP</b></span>
     </div>
   </div>
 </footer>
 
 <!-- ═══ دکمه واتساپ شناور ═══ -->
-<a class="whatsapp-fab" href="https://wa.me/989123456789?text=%D8%B3%D9%84%D8%A7%D9%85%D8%8C%20%D9%85%D8%B4%D8%A7%D9%88%D8%B1%D9%87%20%D9%84%D8%A7%DB%8C%D9%86%20%D9%86%D9%88%D8%B1%DB%8C%20%D9%85%DB%8C%E2%80%8C%D8%AE%D9%88%D8%A7%D9%85" target="_blank" rel="noopener" aria-label="گفتگو در واتساپ">
-  <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z" fill="currentColor" opacity="0.25"/><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M9 8.5c.4 2.8 3.7 6 6.5 6.5l1-1.8-2-1.2-1 .8c-.9-.5-1.8-1.4-2.3-2.3l.8-1-1.2-2-1.8 1z" fill="currentColor"/></svg>
+<a class="whatsapp-fab magnetic" href="https://wa.me/989123456789?text=%D8%B3%D9%84%D8%A7%D9%85%D8%8C%20%D9%85%D8%B4%D8%A7%D9%88%D8%B1%D9%87%20%D9%84%D8%A7%DB%8C%D9%86%20%D9%86%D9%88%D8%B1%DB%8C%20%D9%85%DB%8C%E2%80%8C%D8%AE%D9%88%D8%A7%D9%85" target="_blank" rel="noopener noreferrer" aria-label="گفتگو در واتساپ">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z" fill="currentColor" opacity="0.25"/><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M9 8.5c.4 2.8 3.7 6 6.5 6.5l1-1.8-2-1.2-1 .8c-.9-.5-1.8-1.4-2.3-2.3l.8-1-1.2-2-1.8 1z" fill="currentColor"/></svg>
   <i class="fab-pulse" aria-hidden="true"></i>
 </a>
 
+<!-- ═══ دکمه بازگشت به بالا با حلقه پیشرفت ═══ -->
+<button class="to-top" id="toTop" type="button" aria-label="بازگشت به بالای صفحه">
+  <svg class="ring" viewBox="0 0 48 48" aria-hidden="true">
+    <circle class="ring-bg" cx="24" cy="24" r="21"/>
+    <circle class="ring-fill" id="toTopRing" cx="24" cy="24" r="21"/>
+  </svg>
+  <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m0 0l-6 6m6-6l6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
 <!-- ═══ لایت‌باکس گالری ═══ -->
-<div class="lightbox" id="lightbox" aria-hidden="true">
-  <button class="lb-close" aria-label="بستن">✕</button>
-  <button class="lb-prev" aria-label="تصویر قبلی">‹</button>
-  <img src="" alt="نمایش بزرگ نمونه‌کار"/>
-  <button class="lb-next" aria-label="تصویر بعدی">›</button>
+<div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-label="نمایش بزرگ تصویر نمونه‌کار">
+  <button class="lb-close" type="button" aria-label="بستن">✕</button>
+  <button class="lb-prev" type="button" aria-label="تصویر قبلی">‹</button>
+  <img src="" alt="نمایش بزرگ نمونه‌کار" decoding="async"/>
+  <button class="lb-next" type="button" aria-label="تصویر بعدی">›</button>
   <p class="lb-caption"></p>
 </div>
 
-<!-- ═══ اسکریپت‌ها ═══ -->
-<script src="js/main.js"></script>
+<!-- ═══ توست‌های اطلاع‌رسانی ═══ -->
+<div class="toast-stack" id="toastStack" role="status" aria-live="polite"></div>
+
+<!-- ═══ اسکریپت‌ها (همه محلی — بدون CDN خارجی) ═══ -->
+<script defer src="js/vendor/gsap.min.js"></script>
+<script defer src="js/vendor/ScrollTrigger.min.js"></script>
+<script defer src="js/main.js"></script>
 <script type="module" src="js/three-scene.js"></script>
 </body>
 </html>

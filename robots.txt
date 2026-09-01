@@ -1,0 +1,5 @@
+# لاین نوری استار — اجازه کامل خزیدن
+User-agent: *
+Allow: /
+
+Sitemap: https://hesam-oxe.github.io/line/sitemap.xml
