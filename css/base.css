@@ -1,0 +1,369 @@
+/* ═══════════════════════════════════════════════════════════
+   لاین نوری استار — استایل پایه
+   تم: تیره لوکس | Glassmorphism + نئون‌گلو | RTL
+   ═══════════════════════════════════════════════════════════ */
+
+:root{
+  /* پالت */
+  --bg:        #0a0a12;
+  --bg-2:      #0e0e1a;
+  --glass:     rgba(255,255,255,.045);
+  --glass-2:   rgba(255,255,255,.07);
+  --brd:       rgba(255,255,255,.09);
+  --gold:      #FFB800;
+  --cyan:      #00D4FF;
+  --violet:    #8B5CF6;
+  --text:      #EDF0F7;
+  --muted:     #9AA3B8;
+
+  /* گرادیان‌های نور */
+  --grad:      linear-gradient(90deg, var(--gold) 0%, var(--cyan) 55%, var(--violet) 120%);
+  --grad-soft: linear-gradient(90deg, rgba(255,184,0,.16), rgba(0,212,255,.16), rgba(139,92,246,.16));
+
+  /* فرم کارت شیشه‌ای */
+  --radius:    20px;
+  --shadow:    0 24px 70px -28px rgba(0,0,0,.8);
+
+  --header-h:  76px;
+  --container: 1200px;
+}
+
+/* ── ریست ─────────────────────────────────────────────── */
+*,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+
+html{
+  scroll-behavior:smooth;
+  scroll-padding-top: calc(var(--header-h) + 12px);
+}
+
+body{
+  font-family:'Vazirmatn', system-ui, -apple-system, sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.9;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* بافت نور پس‌زمینه (هاله‌های ثابت محو) */
+body::before{
+  content:'';
+  position:fixed; inset:0; z-index:-2;
+  background:
+    radial-gradient(52vw 42vh at 85% 8%,  rgba(139,92,246,.10), transparent 65%),
+    radial-gradient(48vw 40vh at 8%  28%, rgba(0,212,255,.075), transparent 65%),
+    radial-gradient(46vw 40vh at 55% 88%, rgba(255,184,0,.055), transparent 60%),
+    var(--bg);
+}
+
+img{ max-width:100%; display:block; }
+a{ color:inherit; text-decoration:none; }
+button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; }
+::selection{ background:rgba(0,212,255,.3); }
+
+/* اسکرول‌بار */
+::-webkit-scrollbar{ width:10px; }
+::-webkit-scrollbar-track{ background:var(--bg-2); }
+::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,var(--gold),var(--violet));
+  border-radius:8px;
+}
+
+.container{
+  width:min(100% - 40px, var(--container));
+  margin-inline:auto;
+}
+
+/* ═══════════ کامپوننت‌های مشترک ═══════════ */
+
+/* شیشه */
+.glass{
+  background:var(--glass);
+  border:1px solid var(--brd);
+  border-radius:var(--radius);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+}
+
+/* دکمه‌ها */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  padding:14px 30px;
+  border-radius:14px;
+  font-weight:800; font-size:.95rem;
+  transition:transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s, background .35s, border-color .35s;
+  will-change:transform;
+  white-space:nowrap;
+}
+.btn:active{ transform:scale(.97); }
+
+.btn-primary{
+  background:var(--grad);
+  color:#14100a;
+  box-shadow:0 10px 34px -10px rgba(255,184,0,.55), 0 6px 24px -8px rgba(0,212,255,.35);
+}
+.btn-primary:hover{
+  transform:translateY(-3px);
+  box-shadow:0 18px 44px -10px rgba(255,184,0,.7), 0 10px 34px -8px rgba(0,212,255,.5);
+}
+
+.btn-ghost{
+  border:1px solid rgba(0,212,255,.4);
+  color:var(--cyan);
+  background:rgba(0,212,255,.06);
+  text-shadow:0 0 18px rgba(0,212,255,.5);
+}
+.btn-ghost:hover{
+  transform:translateY(-3px);
+  background:rgba(0,212,255,.12);
+  box-shadow:0 14px 40px -12px rgba(0,212,255,.5);
+}
+
+.btn-outline{
+  border:1px solid rgba(255,184,0,.4);
+  color:var(--gold);
+  background:rgba(255,184,0,.05);
+}
+.btn-outline:hover{
+  background:rgba(255,184,0,.13);
+  box-shadow:0 10px 30px -10px rgba(255,184,0,.5);
+  transform:translateY(-2px);
+}
+
+.btn-sm{ padding:10px 20px; font-size:.86rem; border-radius:11px; }
+.btn-block{ width:100%; }
+
+/* متن گرادیانی و گلو */
+.grad-text{
+  background:var(--grad);
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent; color:transparent;
+  filter:drop-shadow(0 0 26px rgba(0,212,255,.35));
+}
+
+.outline-text{
+  color:transparent;
+  -webkit-text-stroke:1.5px rgba(237,240,247,.55);
+}
+
+/* ═══════════ ۱) هدر ═══════════ */
+
+.site-header{
+  position:fixed; inset-inline:0; top:0; z-index:100;
+  height:var(--header-h);
+  display:flex; align-items:center;
+  transition:background .4s, border-color .4s, backdrop-filter .4s;
+  border-bottom:1px solid transparent;
+}
+.site-header.scrolled{
+  background:rgba(10,10,18,.72);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-bottom-color:var(--brd);
+  box-shadow:0 12px 40px -20px rgba(0,0,0,.9);
+}
+
+.header-inner{
+  display:flex; align-items:center; justify-content:space-between; gap:20px;
+}
+
+.logo{
+  display:flex; align-items:center; gap:11px;
+  font-weight:800; font-size:1.12rem;
+}
+.logo-mark{
+  width:38px; height:38px;
+  filter:drop-shadow(0 0 12px rgba(255,184,0,.5));
+  transition:transform .5s cubic-bezier(.2,.8,.2,1);
+}
+.logo:hover .logo-mark{ transform:rotate(90deg) scale(1.06); }
+.logo-text b{
+  background:var(--grad);
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.main-nav{ display:flex; gap:6px; }
+.main-nav a{
+  padding:9px 15px;
+  border-radius:11px;
+  font-size:.92rem; font-weight:500;
+  color:var(--muted);
+  position:relative;
+  transition:color .3s, background .3s;
+}
+.main-nav a::after{
+  content:'';
+  position:absolute; inset-inline:16px; bottom:5px; height:2px;
+  background:var(--grad);
+  border-radius:2px;
+  transform:scaleX(0); transform-origin:center;
+  transition:transform .35s cubic-bezier(.2,.8,.2,1);
+}
+.main-nav a:hover{ color:var(--text); background:var(--glass); }
+.main-nav a:hover::after{ transform:scaleX(1); }
+
+.header-actions{ display:flex; align-items:center; gap:14px; }
+.phone-link{
+  font-weight:700; font-size:.95rem;
+  color:var(--cyan);
+  text-shadow:0 0 16px rgba(0,212,255,.45);
+  transition:transform .3s;
+}
+.phone-link:hover{ transform:translateY(-2px); }
+
+/* همبرگر */
+.hamburger{
+  display:none;
+  flex-direction:column; justify-content:center; gap:5.5px;
+  width:44px; height:44px;
+  border-radius:12px;
+  border:1px solid var(--brd);
+  background:var(--glass);
+  align-items:center;
+}
+.hamburger span{
+  width:20px; height:2px; border-radius:2px;
+  background:var(--text);
+  transition:transform .35s, opacity .3s;
+}
+.hamburger.open span:nth-child(1){ transform:translateY(7.5px) rotate(45deg); }
+.hamburger.open span:nth-child(2){ opacity:0; }
+.hamburger.open span:nth-child(3){ transform:translateY(-7.5px) rotate(-45deg); }
+
+/* کشوی موبایل */
+.mobile-drawer{
+  position:fixed; top:0; bottom:0; inset-inline-end:0;
+  width:min(78vw, 320px);
+  z-index:120;
+  background:rgba(13,13,24,.92);
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+  border-inline-start:1px solid var(--brd);
+  padding:96px 26px 30px;
+  display:flex; flex-direction:column; gap:8px;
+  transform:translateX(-105%);          /* RTL → از راست بیرون */
+  transition:transform .5s cubic-bezier(.2,.8,.2,1);
+}
+.mobile-drawer.open{ transform:translateX(0); }
+
+.drawer-nav{ display:flex; flex-direction:column; gap:4px; }
+.drawer-nav a{
+  padding:13px 14px;
+  border-radius:12px;
+  font-weight:600;
+  transition:background .3s, color .3s, padding-inline-start .3s;
+}
+.drawer-nav a:hover{ background:var(--glass-2); padding-inline-start:22px; color:var(--cyan); }
+.drawer-cta{ margin-top:18px; }
+.drawer-phone{
+  margin-top:14px; text-align:center;
+  color:var(--muted); font-size:.92rem;
+}
+
+.drawer-backdrop{
+  position:fixed; inset:0; z-index:110;
+  background:rgba(5,5,10,.6);
+  opacity:0; pointer-events:none;
+  transition:opacity .4s;
+}
+.drawer-backdrop.show{ opacity:1; pointer-events:auto; }
+
+/* ═══════════ ۲) هیرو ═══════════ */
+
+.hero{
+  position:relative;
+  min-height:100svh;
+  display:flex; align-items:center;
+  overflow:hidden;
+}
+
+.hero-canvas{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  display:block;
+}
+
+/* وینیت تیره برای خوانایی متن */
+.hero-vignette{
+  position:absolute; inset:0; pointer-events:none;
+  background:
+    radial-gradient(70% 60% at 50% 45%, transparent 40%, rgba(10,10,18,.55) 100%),
+    linear-gradient(180deg, rgba(10,10,18,.35), transparent 30%, transparent 62%, var(--bg) 98%);
+}
+
+.hero-content{
+  position:relative; z-index:2;
+  text-align:center;
+  padding-top:var(--header-h);
+}
+
+.hero-badge{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:8px 20px;
+  border-radius:999px;
+  border:1px solid rgba(255,184,0,.35);
+  background:rgba(255,184,0,.07);
+  color:var(--gold);
+  font-size:.85rem; font-weight:600;
+  backdrop-filter:blur(10px);
+  text-shadow:0 0 14px rgba(255,184,0,.5);
+}
+
+.hero-title{
+  margin-top:26px;
+  font-size:clamp(2.7rem, 9vw, 6.2rem);
+  font-weight:900;
+  line-height:1.25;
+  letter-spacing:-0.5px;
+}
+.hero-title .line{ display:block; }
+
+/* گلو زیر تیتر */
+.hero-title .line:first-child{ filter:drop-shadow(0 0 34px rgba(255,184,0,.3)); }
+
+.hero-sub{
+  max-width:640px;
+  margin:22px auto 0;
+  color:var(--muted);
+  font-size:clamp(.98rem, 2.2vw, 1.15rem);
+  font-weight:400;
+}
+
+.hero-actions{
+  margin-top:38px;
+  display:flex; gap:16px; justify-content:center; flex-wrap:wrap;
+}
+
+/* راهنمای اسکرول */
+.scroll-hint{
+  position:absolute; bottom:26px; inset-inline:0;
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  color:var(--muted); font-size:.78rem; letter-spacing:2px;
+  z-index:2;
+}
+.mouse{
+  width:24px; height:38px;
+  border:1.5px solid rgba(255,255,255,.35);
+  border-radius:14px;
+  display:flex; justify-content:center;
+  padding-top:7px;
+}
+.wheel{
+  width:3px; height:8px;
+  border-radius:3px;
+  background:var(--cyan);
+  box-shadow:0 0 10px var(--cyan);
+  animation:wheel 1.8s ease-in-out infinite;
+}
+@keyframes wheel{
+  0%{ transform:translateY(0); opacity:1; }
+  70%{ transform:translateY(10px); opacity:0; }
+  100%{ transform:translateY(0); opacity:0; }
+}
+
+/* حالت ابتدایی المان‌های هیرو (قبل از انیمیشن GSAP) */
+[data-hero]{
+  opacity:0;
+  transform:translateY(34px);
+}
