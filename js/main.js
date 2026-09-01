@@ -18,6 +18,12 @@ const WHATSAPP = '989123456789';
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const FINE    = matchMedia('(pointer: fine)').matches;
 
+/* ═══════════ ۰) امنیت: ضد clickjacking (Frame-Bust) ═══════════ */
+if (window.top !== window.self) {
+  try { window.top.location = window.location; }
+  catch (_) { document.documentElement.style.display = 'none'; }
+}
+
 /* ═══════════ ۱) سیستم توست ═══════════ */
 function toast(msg, type = 'ok') {
   const stack = $('#toastStack');
@@ -259,6 +265,19 @@ function bind3D() {
       out.textContent = faNum(v) + '٪';
     });
   }
+
+  /* استودیوی سه‌بعدی: تعویض فضا */
+  const studio = window.Linenory3D && window.Linenory3D.studio;
+  if (studio) {
+    $$('.studio-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        $$('.studio-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        studio.setRoom(btn.dataset.room);
+        toast(`فضای «${btn.dataset.name}» فعال شد — بکشید تا بچرخد.`, 'ok');
+      });
+    });
+  }
 }
 if (window.Linenory3D && window.Linenory3D.hero) bind3D();
 else document.addEventListener('linenory:3d-ready', bind3D, { once: true });
@@ -498,6 +517,27 @@ toTop.addEventListener('click', () => {
   window.scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' });
 });
 
-/* ═══════════ ۱۶) امضای کنسول ═══════════ */
-console.log('%c✦ لاین نوری استار — Linenory-Star\nنور، امضای فضای شما.',
+/* ═══════════ ۱۶) سوالات متداول — آکاردئون دسترس‌پذیر ═══════════ */
+$$('.faq-q').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const isOpen = btn.getAttribute('aria-expanded') === 'true';
+
+    /* فقط یک سوال باز بماند */
+    $$('.faq-q').forEach(other => {
+      if (other === btn) return;
+      other.setAttribute('aria-expanded', 'false');
+      other.closest('.faq-item').classList.remove('open');
+      const p = document.getElementById(other.getAttribute('aria-controls'));
+      if (p) p.hidden = true;
+    });
+
+    btn.setAttribute('aria-expanded', String(!isOpen));
+    btn.closest('.faq-item').classList.toggle('open', !isOpen);
+    const panel = document.getElementById(btn.getAttribute('aria-controls'));
+    if (panel) panel.hidden = isOpen;
+  });
+});
+
+/* ═══════════ ۱۷) امضای کنسول ═══════════ */
+console.log('%c✦ لاین نوری استار — Linenory-Star EXTREME\nنور، امضای فضای شما.\n۳ صحنه سه‌بعدی · سئوی کامل · امنیت سطح خدا',
   'background:#0a0a12;color:#FFB800;font-size:14px;padding:10px 16px;border-radius:8px;border:1px solid #00D4FF');

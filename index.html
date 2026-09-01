@@ -2,19 +2,32 @@
 <html lang="fa" dir="rtl">
 <head>
   <!-- ═══════════ امنیت: Content-Security-Policy سخت‌گیرانه ═══════════ -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https://images.unsplash.com; font-src 'self'; connect-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"/>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https://images.unsplash.com; font-src 'self'; connect-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"/>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="referrer" content="strict-origin-when-cross-origin"/>
 
+  <!-- ═══════════ امنیت: سیاست دسترسی به سخت‌افزار (سطح خدا) ═══════════ -->
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), midi=(), gyroscope=(), accelerometer=(), magnetometer=(), interest-cohort=(), idle-detection=()"/>
+
+  <!-- ═══════════ سئو: جئو‌تگ‌های محلی (ایران، تهران) ═══════════ -->
+  <meta name="geo.region" content="IR-23"/>
+  <meta name="geo.placename" content="تهران"/>
+  <meta name="geo.position" content="35.752;51.410"/>
+  <meta name="ICBM" content="35.752, 51.410"/>
+
   <!-- ═══════════ سئو ═══════════ -->
   <title>لاین نوری استار | طراحی، فروش و اجرای لاین نوری LED در تهران</title>
   <meta name="description" content="لاین نوری استار — طراحی، تأمین و اجرای تخصصی لاین نوری LED، نئون فلکس و پروفیل آلومینیومی در تهران. با شبیه‌ساز رنگ نور نتیجه را قبل از خرید ببینید؛ مشاوره رایگان."/>
-  <meta name="keywords" content="لاین نوری, لاین نوری استار, نورپردازی خطی, لاین نوری مخفی, نئون فلکس, پروفیل آلومینیومی, روسری نوری, اسپات مخفی, پروژکتور LED, نورپردازی ساختمان, فروش لاین نوری, قیمت لاین نوری"/>
+  <meta name="keywords" content="لاین نوری, لاین نوری استار, نورپردازی خطی, لاین نوری مخفی, نئون فلکس, پروفیل آلومینیومی, روسری نوری, اسپات مخفی, پروژکتور LED, نورپردازی ساختمان, فروش لاین نوری, قیمت لاین نوری, لاین نوری تهران, اجرای لاین نوری, طراحی نورپردازی داخلی, نور مخفی سقف کاذب, نورپردازی کابینت, نئون نما, شبیه‌ساز رنگ نور LED, کلوین نور, نورپردازی هتل, نورپردازی کافه, لاین نوری ارزان, خرید لاین نوری"/>
   <meta name="author" content="لاین نوری استار"/>
-  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"/>
   <link rel="canonical" href="https://hesam-oxe.github.io/line/"/>
   <meta name="theme-color" content="#0a0a12"/>
+  <meta name="rating" content="general"/>
+  <meta name="distribution" content="global"/>
+  <meta name="language" content="Persian"/>
+  <meta name="revisit-after" content="7 days"/>
 
   <!-- ═══════════ Open Graph (فیسبوک / واتساپ / تلگرام) ═══════════ -->
   <meta property="og:type" content="website"/>
@@ -33,11 +46,19 @@
   <meta name="twitter:title" content="لاین نوری استار | نور، امضای فضای شما"/>
   <meta name="twitter:description" content="طراحی، تأمین و اجرای تخصصی لاین نوری LED — شبیه‌ساز رنگ نور + مشاوره رایگان."/>
   <meta name="twitter:image" content="https://hesam-oxe.github.io/line/assets/img/og-cover.jpg"/>
+  <meta name="twitter:image:alt" content="لاین نوری استار — استودیوی نورپردازی خطی LED"/>
 
   <!-- ═══════════ آیکون و مانیفست ═══════════ -->
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg"/>
   <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png"/>
   <link rel="manifest" href="manifest.webmanifest"/>
+
+  <!-- ═══════════ iOS / PWA ═══════════ -->
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="لاین نوری استار"/>
+  <meta name="application-name" content="لاین نوری استار"/>
 
   <!-- ═══════════ فونت محلی وزیرمتن (متغیر — بدون CDN) ═══════════ -->
   <link rel="preload" href="assets/fonts/Vazirmatn-Variable.woff2" as="font" type="font/woff2" crossorigin/>
@@ -47,7 +68,7 @@
   <link rel="stylesheet" href="css/enhance.css"/>
   <noscript><link rel="stylesheet" href="css/noscript.css"/></noscript>
 
-  <!-- ═══════════ داده‌ی ساختاریافته: بیزینس + وب‌سایت + کاتالوگ محصولات ═══════════ -->
+  <!-- ═══════════ داده‌ی ساختاریافته: بیزینس + نظرات + وب‌سایت + بردکرامب + FAQ ═══════════ -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -66,6 +87,7 @@
         "email": "info@linenory-star.ir",
         "priceRange": "$$",
         "currenciesAccepted": "IRR",
+        "paymentAccepted": "نقدی، کارت بانکی، حواله",
         "address": {
           "@type": "PostalAddress",
           "streetAddress": "خیابان ولیعصر",
@@ -73,6 +95,7 @@
           "addressRegion": "تهران",
           "addressCountry": "IR"
         },
+        "geo": {"@type": "GeoCoordinates", "latitude": 35.752, "longitude": 51.410},
         "openingHoursSpecification": [{
           "@type": "OpeningHoursSpecification",
           "dayOfWeek": ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"],
@@ -80,6 +103,44 @@
           "closes": "18:00"
         }],
         "areaServed": {"@type": "Country", "name": "ایران"},
+        "knowsAbout": ["لاین نوری LED", "نورپردازی مخفی", "نئون فلکس", "طراحی نورپردازی داخلی", "نورپردازی نمای ساختمان", "دمای رنگ کلوین"],
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "reviewCount": "213",
+          "bestRating": "5",
+          "worstRating": "1"
+        },
+        "review": [
+          {
+            "@type": "Review",
+            "author": {"@type": "Person", "name": "سارا محمدی"},
+            "datePublished": "2026-07-14",
+            "reviewBody": "از طراحی تا اجرا همه‌چیز حرفه‌ای بود. شبیه‌ساز سه‌بعدی‌شان باعث شد با اطمینان کامل دمای رنگ را انتخاب کنم. نتیجه در پذیرایی فوق‌العاده شد.",
+            "reviewRating": {"@type": "Rating", "ratingValue": "5", "bestRating": "5"}
+          },
+          {
+            "@type": "Review",
+            "author": {"@type": "Person", "name": "امیر رضایی"},
+            "datePublished": "2026-06-02",
+            "reviewBody": "برای کافه‌مان نئون فلکس سفارشی ساختند؛ دقیقاً همان چیزی که در طرح نشان داده بودند روی دیوار نشست. تیم اجرا تمیز و وقت‌شناس بود.",
+            "reviewRating": {"@type": "Rating", "ratingValue": "5", "bestRating": "5"}
+          },
+          {
+            "@type": "Review",
+            "author": {"@type": "Person", "name": "مهسا کریمی"},
+            "datePublished": "2026-05-19",
+            "reviewBody": "نورپردازی ویلای لواسان با روسری نوری و پروژکتور انجام شد. کیفیت نور یکدست است و بعد از دو سال حتی یک نقطه تیره پیدا نشده.",
+            "reviewRating": {"@type": "Rating", "ratingValue": "5", "bestRating": "5"}
+          },
+          {
+            "@type": "Review",
+            "author": {"@type": "Person", "name": "علی حسینی"},
+            "datePublished": "2026-04-08",
+            "reviewBody": "پروژه لابی هتل را در زمان مقرر تحویل دادند. پیش‌فاکتور شفاف، گارانتی کتبی و پشتیبانی پاسخ‌گو — همکاری دوباره قطعاً تکرار می‌شود.",
+            "reviewRating": {"@type": "Rating", "ratingValue": "4", "bestRating": "5"}
+          }
+        ],
         "hasOfferCatalog": {
           "@type": "OfferCatalog",
           "name": "محصولات لاین نوری استار",
@@ -100,6 +161,69 @@
         "name": "لاین نوری استار",
         "inLanguage": "fa-IR",
         "publisher": {"@id": "https://hesam-oxe.github.io/line/#business"}
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://hesam-oxe.github.io/line/#webpage",
+        "url": "https://hesam-oxe.github.io/line/",
+        "name": "لاین نوری استار | طراحی، فروش و اجرای لاین نوری LED در تهران",
+        "isPartOf": {"@id": "https://hesam-oxe.github.io/line/#website"},
+        "about": {"@id": "https://hesam-oxe.github.io/line/#business"},
+        "inLanguage": "fa-IR",
+        "speakable": {
+          "@type": "SpeakableSpecification",
+          "cssSelector": [".hero-title", ".section-title"]
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "خانه", "item": "https://hesam-oxe.github.io/line/"},
+          {"@type": "ListItem", "position": 2, "name": "محصولات", "item": "https://hesam-oxe.github.io/line/#products"},
+          {"@type": "ListItem", "position": 3, "name": "نمونه‌کارها", "item": "https://hesam-oxe.github.io/line/#portfolio"},
+          {"@type": "ListItem", "position": 4, "name": "تماس و مشاوره", "item": "https://hesam-oxe.github.io/line/#contact"}
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://hesam-oxe.github.io/line/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "قیمت لاین نوری چقدر است و چگونه محاسبه می‌شود؟",
+            "acceptedAnswer": {"@type": "Answer", "text": "قیمت لاین نوری بر اساس متراژ، مدل (مخفی، روسری، نئون فلکس)، دمای رنگ و توان نوردهی محاسبه می‌شود. پس از بازدید رایگان و برداشت ابعاد، پیش‌فاکتور شفاف و رسمی صادر می‌کنید تا بدون هزینه پنهان تصمیم بگیرید."}
+          },
+          {
+            "@type": "Question",
+            "name": "تفاوت لاین نوری با نئون فلکس چیست؟",
+            "acceptedAnswer": {"@type": "Answer", "text": "لاین نوری معمولاً داخل پروفیل یا فرورفتگی سقف نصب می‌شود و نور مستقیم و یکدستی می‌دهد؛ نئون فلکس انعطاف‌پذیر و ضدآب است و برای خطوط خلاقانه، کافه، ویترین و نمای ساختمان استفاده می‌شود. کارشناسان ما متناسب با فضا هر دو را پیشنهاد می‌دهند."}
+          },
+          {
+            "@type": "Question",
+            "name": "اجرای پروژه نورپردازی چقدر زمان می‌برد؟",
+            "acceptedAnswer": {"@type": "Answer", "text": "پروژه‌های مسکونی معمولاً بین ۲ تا ۵ روز کاری و پروژه‌های تجاری بزرگ‌تر مانند کافه، هتل و مغازه بین ۱ تا ۳ هفته زمان می‌برد. زمان دقیق پس از بازدید و طراحی اعلام می‌شود و در قرارداد تضمین می‌گردد."}
+          },
+          {
+            "@type": "Question",
+            "name": "آیا نور لاین نوری برای چشم مضر است؟",
+            "acceptedAnswer": {"@type": "Answer", "text": "خیر. ما از لاین نوری‌های فلیکر-فری (بدون سوسو) با درایور استاندارد و دیفیوزر اپال استفاده می‌کنیم که نور را نرم و یکدست می‌کند. همچنین دمای رنگ مناسب هر فضا (گرم برای استراحت، طبیعی برای کار) پیشنهاد می‌شود."}
+          },
+          {
+            "@type": "Question",
+            "name": "خدمات شما خارج از تهران هم ارائه می‌شود؟",
+            "acceptedAnswer": {"@type": "Answer", "text": "بله. ارسال محصول به سراسر ایران انجام می‌شود و برای پروژه‌های اجرایی بزرگ در شهرهای اطراف تهران و سایر استان‌ها نیز تیم اجرا داریم. جزئیات را در تماس تلفنی یا واتساپ بررسی کنید."}
+          },
+          {
+            "@type": "Question",
+            "name": "گارانتی محصولات و کیفیت اجرا چقدر است؟",
+            "acceptedAnswer": {"@type": "Answer", "text": "تمام محصولات دارای ۱۸ ماه گارانتی تعویض و خدمات پس از فروش هستند. علاوه بر آن، کیفیت اجرا به مدت ۲۴ ماه تضمین می‌شود؛ اگر مشکلی در نصب پیش بیاید رایگان رفع خواهد شد."}
+          },
+          {
+            "@type": "Question",
+            "name": "برای شروع پروژه چه اطلاعاتی نیاز است؟",
+            "acceptedAnswer": {"@type": "Answer", "text": "کافی است نوع فضا (پذیرایی، کافه، مغازه، ویلا)، متراژ تقریبی و سلیقه رنگی خود را بگویید. اگر پلان یا عکس فضا دارید، برآورد دقیق‌تری ارائه می‌شود؛ در غیر این صورت با بازدید رایگان همه‌چیز اندازه‌گیری می‌شود."}
+          }
+        ]
       }
     ]
   }
@@ -157,7 +281,10 @@
       <a href="#simulator">شبیه‌ساز نور</a>
       <a href="#services">خدمات</a>
       <a href="#products">محصولات</a>
+      <a href="#studio">استودیو ۳D</a>
       <a href="#portfolio">نمونه‌کارها</a>
+      <a href="#about">درباره</a>
+      <a href="#faq">سوالات</a>
       <a href="#contact">تماس</a>
     </nav>
 
@@ -181,7 +308,10 @@
     <a href="#simulator">شبیه‌ساز نور</a>
     <a href="#services">خدمات</a>
     <a href="#products">محصولات</a>
+    <a href="#studio">استودیو ۳D</a>
     <a href="#portfolio">نمونه‌کارها</a>
+    <a href="#about">درباره ما</a>
+    <a href="#faq">سوالات متداول</a>
     <a href="#contact">تماس</a>
   </nav>
   <a class="btn btn-primary drawer-cta" href="#contact">مشاوره رایگان</a>
@@ -417,7 +547,40 @@
   </div>
 </section>
 
-<!-- ═══════════════════ ۶) نمونه‌کارها ═══════════════════ -->
+<!-- ═══════════════════ ۶) استودیوی سه‌بعدی تعاملی ═══════════════════ -->
+<section class="section studio" id="studio">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="section-tag">استودیوی سه‌بعدی</span>
+      <h2 class="section-title">فضای خود را <span class="grad-text">همین‌جا ببینید</span></h2>
+      <p class="section-desc">سه فضای واقعی با نورپردازی اجراشده — فضای موردنظر را انتخاب کنید، صحنه را با ماوس بچرخانید و نتیجه را از هر زاویه ارزیابی کنید.</p>
+    </div>
+
+    <div class="studio-panel glass" data-reveal>
+      <div class="studio-stage">
+        <canvas id="studioCanvas" aria-label="نمای سه‌بعدی تعاملی فضاها با نورپردازی"></canvas>
+        <div class="studio-hint" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M8 3 4 7l4 4M4 7h16M16 21l4-4-4-4M20 17H4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          بکشید تا فضا بچرخد
+        </div>
+      </div>
+
+      <div class="studio-controls" role="group" aria-label="انتخاب فضای سه‌بعدی">
+        <button class="studio-btn active" type="button" data-room="living" data-name="نشیمن مدرن">
+          <i class="dot dot-gold" aria-hidden="true"></i>نشیمن مدرن<small>روسری نوری گرم + نور مخفی</small>
+        </button>
+        <button class="studio-btn" type="button" data-room="cafe" data-name="کافه نئون">
+          <i class="dot dot-violet" aria-hidden="true"></i>کافه نئون<small>نئون فلکس بنفش + خط کناری</small>
+        </button>
+        <button class="studio-btn" type="button" data-room="hotel" data-name="هتل لوکس">
+          <i class="dot dot-cyan" aria-hidden="true"></i>هتل لوکس<small>لابی ستاره‌باران سرد</small>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ ۷) نمونه‌کارها ═══════════════════ -->
 <section class="section portfolio" id="portfolio">
   <div class="container">
     <div class="section-head" data-reveal>
@@ -447,7 +610,46 @@
   </div>
 </section>
 
-<!-- ═══════════════════ ۷) چرا ما — شمارنده‌ها ═══════════════════ -->
+<!-- ═══════════════════ ۸) مراحل اجرای پروژه ═══════════════════ -->
+<section class="section process" id="process">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="section-tag">مسیر پروژه</span>
+      <h2 class="section-title">پنج قدم تا <span class="grad-text">نور ایده‌آل</span></h2>
+      <p class="section-desc">فرایند کاری ما شفاف و مرحله‌به‌مرحله است — همیشه می‌دانید پروژه‌تان کجای مسیر است.</p>
+    </div>
+
+    <ol class="process-track" data-reveal>
+      <li class="process-step">
+        <span class="step-num" aria-hidden="true">۰۱</span>
+        <h3>مشاوره و بازدید رایگان</h3>
+        <p>تماس اولیه، شناخت سلیقه شما و برداشت دقیق ابعاد فضا — کاملاً رایگان و بدون تعهد.</p>
+      </li>
+      <li class="process-step">
+        <span class="step-num" aria-hidden="true">۰۲</span>
+        <h3>طراحی و شبیه‌سازی</h3>
+        <p>طرح صحنه نور با دمای رنگ پیشنهادی و پیش‌نمایش سه‌بعدی، قبل از هر خریدی.</p>
+      </li>
+      <li class="process-step">
+        <span class="step-num" aria-hidden="true">۰۳</span>
+        <h3>تامین و پیش‌فاکتور</h3>
+        <p>تأمین کالا از واردکننده با گارانتی کتبی و پیش‌فاکتور شفاف، بدون هزینه پنهان.</p>
+      </li>
+      <li class="process-step">
+        <span class="step-num" aria-hidden="true">۰۴</span>
+        <h3>اجرای تمیز و استاندارد</h3>
+        <p>نصب توسط تیم فنی اختصاصی؛ کابل‌کشی مرتب، بدون نقطه تیره و تحویل به‌موقع.</p>
+      </li>
+      <li class="process-step">
+        <span class="step-num" aria-hidden="true">۰۵</span>
+        <h3>تحویل و ۲۴ ماه ضمانت</h3>
+        <p>تحویل نهایی همراه آموزش کنترل نور و پشتیبانی پاسخ‌گو تا دو سال کامل.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ═══════════════════ ۹) چرا ما — شمارنده‌ها ═══════════════════ -->
 <section class="section stats" id="stats">
   <div class="container">
     <div class="section-head" data-reveal>
@@ -476,7 +678,198 @@
   </div>
 </section>
 
-<!-- ═══════════════════ ۸) CTA مشاوره رایگان ═══════════════════ -->
+<!-- ═══════════════════ ۱۰) درباره ما + تایم‌لاین ═══════════════════ -->
+<section class="section about" id="about">
+  <div class="container about-grid">
+    <div class="about-text" data-reveal>
+      <span class="section-tag">درباره استار</span>
+      <h2 class="section-title">بیش از یک دهه، <span class="grad-text">همسفرِ نورِ شما</span></h2>
+      <p>
+        لاین نوری استار از سال ۱۳۹۲ با یک باور ساده شروع کرد: نور فقط روشنایی نیست؛
+        حال‌وهوای فضا را می‌سازد. ما باور داریم هر پذیرایی، کافه یا لابی هتلی می‌تواند
+        با خطی درست از نور، حس و تجربه‌ای متفاوت خلق کند — و دقیقاً همین باور است که
+        هر پروژه را برایمان به یک اثر می‌بدل کند.
+      </p>
+      <p>
+        امروز با تیمی از طراحان نور و تکنسین‌های مجرب، کل چرخه را زیر یک سقف ارائه
+        می‌دهیم: از شبیه‌سازی سه‌بعدی پیش از خرید، تا تأمین مستقیم کالا از واردکننده و
+        اجرای تمیز و استاندارد. بیش از <b>۵۰۰ پروژه اجراشده</b> و امتیاز رضایت
+        <b>۴.۹ از ۵</b>، تنها بخشی از نتیجه این مسیر است.
+      </p>
+      <ul class="about-chips">
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>تأمین مستقیم از واردکننده</li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>گارانتی ۱۸ ماهه کالا</li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>ضمانت ۲۴ ماهه اجرا</li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>طراحی سه‌بعدی رایگان</li>
+      </ul>
+    </div>
+
+    <div class="timeline" data-reveal aria-label="تاریخچه شرکت">
+      <div class="tl-item">
+        <span class="tl-year">۱۳۹۲</span>
+        <div class="tl-body glass"><h3>آغاز راه</h3><p>شروع فعالیت با فروشگاه تخصصی نور در خیابان ولیعصر تهران</p></div>
+      </div>
+      <div class="tl-item">
+        <span class="tl-year">۱۳۹۵</span>
+        <div class="tl-body glass"><h3>ورود به طراحی نور</h3><p>نخستین پروژه‌های لوکس مسکونی و شکل‌گیری تیم طراحی نورپردازی</p></div>
+      </div>
+      <div class="tl-item">
+        <span class="tl-year">۱۳۹۸</span>
+        <div class="tl-body glass"><h3>پوشش سراسری</h3><p>ارسال محصول به سراسر ایران و اجرای پروژه در استان‌های همجوار</p></div>
+      </div>
+      <div class="tl-item">
+        <span class="tl-year">۱۴۰۱</span>
+        <div class="tl-body glass"><h3>پروژه شماره ۵۰۰</h3><p>عبور از مرز ۵۰۰ پروژه اجراشده و راه‌اندازی تیم فنی اختصاصی</p></div>
+      </div>
+      <div class="tl-item">
+        <span class="tl-year">۱۴۰۴</span>
+        <div class="tl-body glass"><h3>استودیوی دیجیتال</h3><p>عرضه شبیه‌ساز سه‌بعدی آنلاین — انتخاب رنگ نور قبل از خرید</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ ۱۱) نظرات مشتریان ═══════════════════ -->
+<section class="section testimonials" id="testimonials">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="section-tag">نظرات مشتریان</span>
+      <h2 class="section-title">روایت کسانی که <span class="grad-text">نور را دیدند</span></h2>
+      <p class="section-desc">امتیاز ۴.۹ از ۵ — رضایت بیش از ۲۰۰ مشتری، اعتبار اصلی ماست.</p>
+    </div>
+
+    <div class="grid testi-grid">
+      <article class="card glass testi-card card-tilt" data-reveal>
+        <div class="testi-stars" role="img" aria-label="امتیاز ۵ از ۵">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8L12 2z" fill="currentColor"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8L12 2z" fill="currentColor"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8L12 2z" fill="currentColor"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8L12 2z" fill="currentColor"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8L12 2z" fill="currentColor"/></svg>
+        </div>
+        <p class="testi-text">از طراحی تا اجرا همه‌چیز حرفه‌ای بود. شبیه‌ساز سه‌بعدی‌شان باعث شد با اطمینان کامل دمای رنگ را انتخاب کنم. نتیجه در پذیرایی فوق‌العاده شد.</p>
+        <div class="testi-author">
+          <span class="avatar" aria-hidden="true">س</span>
+          <div><b>سارا محمدی</b><small>پذیرایی منزل — سعادت‌آباد</small></div>
+        </div>
+      </article>
+
+      <article class="card glass testi-card card-tilt" data-reveal>
+        <div class="testi-stars" role="img" aria-label="امتیاز ۵ از ۵">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8L12 2z" fill="currentColor"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8L12 2z" fill="currentColor"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8L12 2z" fill="currentColor"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8L12 2z" fill="currentColor"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8L12 2z" fill="currentColor"/></svg>
+        </div>
+        <p class="testi-text">برای کافه‌مان نئون فلکس سفارشی ساختند؛ دقیقاً همان چیزی که در طرح نشان داده بودند روی دیوار نشست. تیم اجرا تمیز و وقت‌شناس بود.</p>
+        <div class="testi-author">
+          <span class="avatar" aria-hidden="true">ا</span>
+          <div><b>امیر رضایی</b><small>کافه دار — خیابان جردن</small></div>
+        </div>
+      </article>
+
+      <article class="card glass testi-card card-tilt" data-reveal>
+        <div class="testi-stars" role="img" aria-label="امتیاز ۵ از ۵">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8L12 2z" fill="currentColor"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8L12 2z" fill="currentColor"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8L12 2z" fill="currentColor"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8L12 2z" fill="currentColor"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8L12 2z" fill="currentColor"/></svg>
+        </div>
+        <p class="testi-text">نورپردازی ویلای لواسان با روسری نوری و پروژکتور انجام شد. کیفیت نور یکدست است و بعد از دو سال حتی یک نقطه تیره پیدا نشده.</p>
+        <div class="testi-author">
+          <span class="avatar" aria-hidden="true">م</span>
+          <div><b>مهسا کریمی</b><small>ویلا — لواسان</small></div>
+        </div>
+      </article>
+
+      <article class="card glass testi-card card-tilt" data-reveal>
+        <div class="testi-stars" role="img" aria-label="امتیاز ۴ از ۵">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8L12 2z" fill="currentColor"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8L12 2z" fill="currentColor"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8L12 2z" fill="currentColor"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8L12 2z" fill="currentColor"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8L12 2z" fill="currentColor" opacity=".25"/></svg>
+        </div>
+        <p class="testi-text">پروژه لابی هتل را در زمان مقرر تحویل دادند. پیش‌فاکتور شفاف، گارانتی کتبی و پشتیبانی پاسخ‌گو — همکاری دوباره قطعاً تکرار می‌شود.</p>
+        <div class="testi-author">
+          <span class="avatar" aria-hidden="true">ع</span>
+          <div><b>علی حسینی</b><small>مدیر هتل — پاسداران</small></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ ۱۲) سوالات متداول ═══════════════════ -->
+<section class="section faq" id="faq">
+  <div class="container faq-wrap">
+    <div class="section-head" data-reveal>
+      <span class="section-tag">پاسخ شفاف</span>
+      <h2 class="section-title">سوالات <span class="grad-text">متداول</span></h2>
+      <p class="section-desc">پاسخ پرتکرارترین سوال‌ها را همین‌جا بخوانید؛ اگر سوال دیگری دارید در واتساپ بپرسید.</p>
+    </div>
+
+    <div class="faq-list" data-reveal>
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="faqA1" id="faqQ1">
+          <span>قیمت لاین نوری چقدر است و چگونه محاسبه می‌شود؟</span>
+          <i class="faq-icon" aria-hidden="true"></i>
+        </button>
+        <div class="faq-a" id="faqA1" role="region" aria-labelledby="faqQ1" hidden>
+          <p>قیمت بر اساس متراژ، مدل (مخفی، روسری، نئون فلکس)، دمای رنگ و توان نوردهی محاسبه می‌شود. پس از بازدید رایگان و برداشت ابعاد، پیش‌فاکتور شفاف و رسمی صادر می‌کنیم تا بدون هزینه پنهان تصمیم بگیرید.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="faqA2" id="faqQ2">
+          <span>تفاوت لاین نوری با نئون فلکس چیست؟</span>
+          <i class="faq-icon" aria-hidden="true"></i>
+        </button>
+        <div class="faq-a" id="faqA2" role="region" aria-labelledby="faqQ2" hidden>
+          <p>لاین نوری معمولاً داخل پروفیل یا فرورفتگی سقف نصب می‌شود و نور مستقیم و یکدستی می‌دهد؛ نئون فلکس انعطاف‌پذیر و ضدآب است و برای خطوط خلاقانه، کافه، ویترین و نمای ساختمان استفاده می‌شود. کارشناسان ما متناسب با فضا هر دو را پیشنهاد می‌دهند.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="faqA3" id="faqQ3">
+          <span>اجرای پروژه نورپردازی چقدر زمان می‌برد؟</span>
+          <i class="faq-icon" aria-hidden="true"></i>
+        </button>
+        <div class="faq-a" id="faqA3" role="region" aria-labelledby="faqQ3" hidden>
+          <p>پروژه‌های مسکونی معمولاً بین ۲ تا ۵ روز کاری و پروژه‌های تجاری بزرگ‌تر مانند کافه، هتل و مغازه بین ۱ تا ۳ هفته زمان می‌برد. زمان دقیق پس از بازدید و طراحی اعلام می‌شود و در قرارداد تضمین می‌گردد.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="faqA4" id="faqQ4">
+          <span>آیا نور لاین نوری برای چشم مضر است؟</span>
+          <i class="faq-icon" aria-hidden="true"></i>
+        </button>
+        <div class="faq-a" id="faqA4" role="region" aria-labelledby="faqQ4" hidden>
+          <p>خیر. ما از لاین نوری‌های فلیکر-فری (بدون سوسو) با درایور استاندارد و دیفیوزر اپال استفاده می‌کنیم که نور را نرم و یکدست می‌کند. همچنین دمای رنگ مناسب هر فضا (گرم برای استراحت، طبیعی برای کار) پیشنهاد می‌شود.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="faqA5" id="faqQ5">
+          <span>خدمات شما خارج از تهران هم ارائه می‌شود؟</span>
+          <i class="faq-icon" aria-hidden="true"></i>
+        </button>
+        <div class="faq-a" id="faqA5" role="region" aria-labelledby="faqQ5" hidden>
+          <p>بله. ارسال محصول به سراسر ایران انجام می‌شود و برای پروژه‌های اجرایی بزرگ در شهرهای اطراف تهران و سایر استان‌ها نیز تیم اجرا داریم. جزئیات را در تماس تلفنی یا واتساپ بررسی کنید.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="faqA6" id="faqQ6">
+          <span>گارانتی محصولات و کیفیت اجرا چقدر است؟</span>
+          <i class="faq-icon" aria-hidden="true"></i>
+        </button>
+        <div class="faq-a" id="faqA6" role="region" aria-labelledby="faqQ6" hidden>
+          <p>تمام محصولات دارای ۱۸ ماه گارانتی تعویض و خدمات پس از فروش هستند. علاوه بر آن، کیفیت اجرا به مدت ۲۴ ماه تضمین می‌شود؛ اگر مشکلی در نصب پیش بیاید رایگان رفع خواهد شد.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="faqA7" id="faqQ7">
+          <span>برای شروع پروژه چه اطلاعاتی نیاز است؟</span>
+          <i class="faq-icon" aria-hidden="true"></i>
+        </button>
+        <div class="faq-a" id="faqA7" role="region" aria-labelledby="faqQ7" hidden>
+          <p>کافی است نوع فضا (پذیرایی، کافه، مغازه، ویلا)، متراژ تقریبی و سلیقه رنگی خود را بگویید. اگر پلان یا عکس فضا دارید، برآورد دقیق‌تری ارائه می‌شود؛ در غیر این صورت با بازدید رایگان همه‌چیز اندازه‌گیری می‌شود.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ ۱۳) CTA مشاوره رایگان ═══════════════════ -->
 <section class="section cta" id="contact">
   <div class="container cta-wrap">
     <div class="cta-text" data-reveal>
@@ -532,7 +925,7 @@
 
 </main>
 
-<!-- ═══════════════════ ۹) فوتر ═══════════════════ -->
+<!-- ═══════════════════ ۱۴) فوتر ═══════════════════ -->
 <footer class="site-footer">
   <div class="container footer-grid">
     <div class="footer-about">
@@ -562,8 +955,10 @@
       <h4>دسترسی سریع</h4>
       <a href="#home">خانه</a>
       <a href="#simulator">شبیه‌ساز نور</a>
+      <a href="#studio">استودیو سه‌بعدی</a>
       <a href="#products">محصولات</a>
       <a href="#portfolio">نمونه‌کارها</a>
+      <a href="#faq">سوالات متداول</a>
       <a href="#contact">مشاوره رایگان</a>
     </nav>
 

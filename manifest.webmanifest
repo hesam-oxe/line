@@ -4,13 +4,33 @@
   "description": "طراحی، تأمین و اجرای تخصصی لاین نوری LED — نور، امضای فضای شما",
   "lang": "fa",
   "dir": "rtl",
+  "id": "https://hesam-oxe.github.io/line/",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
+  "orientation": "portrait-primary",
   "background_color": "#0a0a12",
   "theme_color": "#0a0a12",
+  "categories": ["business", "shopping", "lifestyle"],
   "icons": [
     { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
     { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "شبیه‌ساز رنگ نور",
+      "url": "./#simulator",
+      "description": "دمای رنگ و شدت نور را قبل از خرید امتحان کنید"
+    },
+    {
+      "name": "استودیوی سه‌بعدی",
+      "url": "./#studio",
+      "description": "سه فضای اجراشده را از هر زاویه ببینید"
+    },
+    {
+      "name": "مشاوره رایگان",
+      "url": "./#contact",
+      "description": "درخواست مشاوره و استعلام قیمت"
+    }
   ]
 }
