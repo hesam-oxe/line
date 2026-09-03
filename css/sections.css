@@ -951,3 +951,10 @@ input[type="range"]::-moz-range-thumb{
   .faq-q{ padding:15px 16px; font-size:.88rem; }
   .faq-a p{ padding:0 16px 16px; }
 }
+
+/* ═══════════ دکمه مشاهده همه محصولات (فروشگاه) ═══════════ */
+.shop-more{
+  text-align:center; margin-top:44px;
+  display:flex; flex-direction:column; align-items:center; gap:12px;
+}
+.shop-more-hint{ color:var(--muted); font-size:.86rem; max-width:520px; }

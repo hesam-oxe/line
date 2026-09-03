@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https://images.unsplash.com; font-src 'self'; connect-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="referrer" content="strict-origin-when-cross-origin"/>
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), midi=(), gyroscope=(), accelerometer=(), magnetometer=(), interest-cohort=(), idle-detection=()"/>
+
+  <title>پنل کاربری | لاین نوری استار</title>
+  <meta name="description" content="پنل کاربری — پیگیری استعلام قیمت، پیش‌فاکتورها و پیام‌ها."/>
+  <meta name="robots" content="noindex, nofollow"/>
+  <meta name="theme-color" content="#0a0a12"/>
+
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg"/>
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png"/>
+  <link rel="manifest" href="manifest.webmanifest"/>
+
+  <link rel="stylesheet" href="css/base.css"/>
+  <link rel="stylesheet" href="css/panels.css"/>
+  <link rel="stylesheet" href="css/products.css"/>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="container topbar-in">
+      <a class="logo" href="index.html" aria-label="بازگشت به سایت اصلی">
+        <svg class="logo-mark" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+          <rect x="4" y="17" width="32" height="6" rx="3" fill="#FFB800"/>
+          <rect x="10" y="4" width="6" height="32" rx="3" fill="#8B5CF6" opacity="0.85"/>
+          <circle cx="20" cy="20" r="3.4" fill="#fff"/>
+        </svg>
+        <span>لاین نوری <b>استار</b></span>
+      </a>
+      <nav class="topbar-nav" aria-label="میانبر">
+        <a href="products.html">فروشگاه</a>
+        <a href="index.html#simulator">شبیه‌ساز نور</a>
+        <a href="index.html#contact">تماس</a>
+      </nav>
+      <div class="topbar-side" id="userSide"></div>
+    </div>
+  </header>
+
+  <div class="container panel">
+    <aside class="p-sidebar" aria-label="منوی پنل کاربری">
+      <nav class="p-nav" id="pNav">
+        <button type="button" data-view="dash" class="on">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12l9-8 9 8M5 10v10h5v-6h4v6h5V10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="nav-label-desktop">داشبورد</span>
+        </button>
+        <button type="button" data-view="quotes">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10a2 2 0 0 1 2 2v16l-4-3H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM9 8h6M9 12h4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="nav-label-desktop">استعلام‌های من</span>
+          <span class="nav-count" id="cQuotes" hidden></span>
+        </button>
+        <button type="button" data-view="msgs">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+          <span class="nav-label-desktop">پیام‌های من</span>
+          <span class="nav-count" id="cMsgs" hidden></span>
+        </button>
+        <button type="button" data-view="favs">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5S3.5 15.4 3.5 9.6C3.5 6.9 5.6 5 8.1 5c1.5 0 3 .8 3.9 2 .9-1.2 2.4-2 3.9-2 2.5 0 4.6 1.9 4.6 4.6 0 5.8-8.5 10.9-8.5 10.9z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+          <span class="nav-label-desktop">علاقه‌مندی‌ها</span>
+          <span class="nav-count" id="cFavs" hidden></span>
+        </button>
+        <button type="button" data-view="profile">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M4 21c1.5-4 5-5.5 8-5.5s6.5 1.5 8 5.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          <span class="nav-label-desktop">پروفایل</span>
+        </button>
+        <div class="nav-sep"></div>
+        <button type="button" id="logoutBtn">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4M10 8l-4 4 4 4M6 12h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="nav-label-desktop">خروج</span>
+        </button>
+      </nav>
+    </aside>
+
+    <main class="p-main" id="pMain" aria-live="polite"></main>
+  </div>
+
+  <script defer src="js/store.js"></script>
+  <script defer src="js/ui.js"></script>
+  <script defer src="js/dashboard.js"></script>
+</body>
+</html>

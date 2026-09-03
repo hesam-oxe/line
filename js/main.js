@@ -444,6 +444,16 @@ form.addEventListener('submit', (e) => {
     `نام: ${name}\n` +
     `شماره تماس: ${phone}\n` +
     `توضیح پروژه: ${desc || '—'}`;
+
+  /* ── ثبت همزمان در صندوق پیام پنل مدیریت (لایه دیتا محلی) ── */
+  if (window.LNS) {
+    try {
+      LNS.ready().then(() => {
+        LNS.saveMessage({ name, contact: phone, body: desc || 'درخواست مشاوره از فرم اصلی سایت' });
+      }).catch(() => {});
+    } catch (_) { /* واتساپ مسیر اصلی است — ذخیره‌سازی اختیاری */ }
+  }
+
   window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
 
   lastSubmit = now;
@@ -537,6 +547,21 @@ $$('.faq-q').forEach(btn => {
     if (panel) panel.hidden = isOpen;
   });
 });
+
+/* ═══════════ ۱۶.۵) بازتاب وضعیت نشست در دکمه ورود ═══════════ */
+if (window.LNS) {
+  LNS.ready().then(() => {
+    const u = LNS.me();
+    if (!u) return;
+    const set = (a) => {
+      if (!a) return;
+      a.textContent = u.role === 'admin' ? 'پنل مدیریت' : 'پنل من';
+      a.href = u.role === 'admin' ? 'admin.html' : 'dashboard.html';
+    };
+    set(document.getElementById('authLink'));
+    set(document.getElementById('authLinkMobile'));
+  }).catch(() => {});
+}
 
 /* ═══════════ ۱۷) امضای کنسول ═══════════ */
 console.log('%c✦ لاین نوری استار — Linenory-Star EXTREME\nنور، امضای فضای شما.\n۳ صحنه سه‌بعدی · سئوی کامل · امنیت سطح خدا',

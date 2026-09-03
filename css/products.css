@@ -1,0 +1,265 @@
+/* ═══════════════════════════════════════════════════════════
+   لاین نوری استار — استایل فروشگاه محصولات
+   ویژوال نوار LED با گلو داینامیک (CSSOM --pc) بدون عکس خارجی
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── هیرو فروشگاه ──────────────────────────────────────── */
+.shop-hero{ padding:54px 0 10px; text-align:center; position:relative; }
+.shop-hero::before{
+  content:''; position:absolute; inset:0; z-index:-1; pointer-events:none;
+  background:
+    radial-gradient(46vw 30vh at 78% 12%, rgba(255,184,0,.1), transparent 62%),
+    radial-gradient(42vw 28vh at 18% 20%, rgba(139,92,246,.1), transparent 62%);
+}
+.shop-kicker{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:6px 16px; border-radius:999px;
+  background:var(--glass); border:1px solid var(--brd);
+  color:var(--gold); font-size:.82rem; font-weight:600;
+  margin-bottom:16px;
+}
+.shop-kicker::before{
+  content:''; width:8px; height:8px; border-radius:50%;
+  background:var(--gold); box-shadow:0 0 12px var(--gold);
+  animation:blink 2.2s infinite;
+}
+@keyframes blink{ 0%,100%{opacity:1} 50%{opacity:.35} }
+.shop-title{ font-size:clamp(1.7rem, 4vw, 2.6rem); font-weight:800; line-height:1.5; }
+.shop-title .grad-text{
+  background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.shop-desc{ color:var(--muted); max-width:560px; margin:10px auto 0; font-size:.98rem; }
+
+/* ── نوار فیلتر ────────────────────────────────────────── */
+.shop-bar{
+  position:sticky; top:66px; z-index:40;
+  background:rgba(10,10,18,.86);
+  backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  border-block:1px solid var(--brd);
+  padding:13px 0; margin-top:26px;
+}
+.shop-bar-in{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.chips{ display:flex; gap:7px; flex-wrap:wrap; }
+.chip{
+  padding:7px 15px; border-radius:999px;
+  background:var(--glass); border:1px solid var(--brd);
+  color:var(--muted); font-size:.85rem; font-weight:600;
+  transition:.18s; white-space:nowrap;
+}
+.chip:hover{ color:var(--text); border-color:rgba(255,255,255,.2); }
+.chip.on{
+  color:#0a0a12; background:linear-gradient(90deg,var(--gold),#FFD24D);
+  border-color:transparent; box-shadow:0 4px 18px -6px rgba(255,184,0,.55);
+}
+.shop-tools{ margin-inline-start:auto; display:flex; gap:9px; flex-wrap:wrap; }
+.shop-search{ position:relative; }
+.shop-search svg{
+  position:absolute; inset-inline-start:12px; top:50%; transform:translateY(-50%);
+  width:16px; height:16px; color:var(--muted); pointer-events:none;
+}
+.shop-search input{
+  width:220px; max-width:60vw;
+  background:var(--glass); border:1px solid var(--brd);
+  border-radius:12px; color:var(--text);
+  font:inherit; font-size:.9rem; padding:9px 38px 9px 15px;
+}
+.shop-search input:focus{ outline:none; border-color:rgba(0,212,255,.5); }
+.shop-search .s-start{ inset-inline-start:auto; inset-inline-end:12px; }
+.shop-select{
+  background:var(--glass); border:1px solid var(--brd);
+  border-radius:12px; color:var(--text);
+  font:inherit; font-size:.88rem; padding:9px 13px; cursor:pointer;
+}
+.shop-select:focus{ outline:none; border-color:rgba(0,212,255,.5); }
+.shop-count{ color:var(--muted); font-size:.84rem; }
+
+/* ── گرید محصولات ──────────────────────────────────────── */
+.shop-grid{
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(268px,1fr));
+  gap:20px; padding:30px 0 90px;
+}
+.prod-card{
+  background:var(--glass); border:1px solid var(--brd);
+  border-radius:20px; overflow:hidden;
+  display:flex; flex-direction:column;
+  transition:transform .25s ease, box-shadow .25s ease, border-color .25s;
+  position:relative;
+}
+.prod-card:hover{
+  transform:translateY(-5px);
+  border-color:rgba(255,184,0,.3);
+  box-shadow:0 24px 55px -22px rgba(0,0,0,.75), 0 0 30px -18px var(--pc, var(--gold));
+}
+
+/* ویژوال LED — نوار نور با گلو رنگ محصول */
+.prod-visual{
+  height:150px; position:relative; overflow:hidden;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.03), transparent 40%),
+    linear-gradient(90deg, #0d0d18, #12121f);
+  display:grid; place-items:center;
+}
+.prod-visual::before{
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(60% 90% at 50% 50%, color-mix(in srgb, var(--pc,#FFC966) 22%, transparent), transparent 75%);
+}
+.strip{
+  width:72%; height:12px; border-radius:99px;
+  background:#171727;
+  border:1px solid rgba(255,255,255,.08);
+  position:relative;
+  box-shadow:0 6px 14px -6px rgba(0,0,0,.8);
+}
+.strip::before{
+  content:''; position:absolute; inset:2px 6px; border-radius:99px;
+  background:linear-gradient(90deg,
+    color-mix(in srgb, var(--pc,#FFC966) 92%, #fff 0%),
+    color-mix(in srgb, var(--pc,#FFC966) 70%, #ffffff 30%),
+    color-mix(in srgb, var(--pc,#FFC966) 92%, #fff 0%));
+  box-shadow:
+    0 0 14px var(--pc,#FFC966),
+    0 0 34px color-mix(in srgb, var(--pc,#FFC966) 55%, transparent),
+    0 0 70px color-mix(in srgb, var(--pc,#FFC966) 28%, transparent);
+  animation:stripPulse 3.4s ease-in-out infinite;
+}
+@keyframes stripPulse{
+  0%,100%{ opacity:1; }
+  50%{ opacity:.82; }
+}
+.strip::after{
+  content:''; position:absolute; top:-5px; bottom:-5px; inset-inline:14%;
+  border-radius:99px;
+  background:repeating-linear-gradient(90deg, transparent 0 9px, rgba(255,255,255,.05) 9px 11px);
+}
+.prod-fav{
+  position:absolute; top:12px; inset-inline-start:12px; z-index:2;
+  width:34px; height:34px; border-radius:11px;
+  display:grid; place-items:center;
+  background:rgba(10,10,18,.6); border:1px solid var(--brd);
+  color:var(--muted); backdrop-filter:blur(6px);
+  transition:.18s;
+}
+.prod-fav:hover{ color:#F87171; border-color:rgba(248,113,113,.4); }
+.prod-fav.on{ color:#F87171; border-color:rgba(248,113,113,.5); }
+.prod-fav svg{ width:17px; height:17px; }
+.prod-fav.on svg path{ fill:currentColor; }
+.prod-badge{
+  position:absolute; top:14px; inset-inline-end:14px; z-index:2;
+  padding:4px 12px; border-radius:999px;
+  font-size:.72rem; font-weight:700;
+  color:#0a0a12; background:linear-gradient(90deg,var(--gold),#FFD24D);
+  box-shadow:0 4px 14px -4px rgba(255,184,0,.6);
+}
+.prod-off{
+  position:absolute; bottom:12px; inset-inline-end:14px; z-index:2;
+  padding:3px 10px; border-radius:999px;
+  font-size:.72rem; font-weight:800;
+  color:#fff; background:rgba(248,113,113,.92);
+  box-shadow:0 4px 14px -4px rgba(248,113,113,.7);
+}
+
+.prod-body{ padding:16px 17px 17px; display:flex; flex-direction:column; gap:10px; flex:1; }
+.prod-name{ font-size:1rem; font-weight:700; line-height:1.6; }
+.prod-desc{
+  color:var(--muted); font-size:.8rem; line-height:1.7;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+}
+.prod-specs{ display:flex; gap:6px; flex-wrap:wrap; }
+.spec{
+  padding:3px 10px; border-radius:8px;
+  background:rgba(255,255,255,.05); border:1px solid var(--brd);
+  color:var(--muted); font-size:.72rem; font-weight:600;
+}
+.prod-colors{ display:flex; gap:5px; }
+.swatch{
+  width:16px; height:16px; border-radius:50%;
+  border:2px solid rgba(255,255,255,.25);
+  box-shadow:0 0 8px color-mix(in srgb, currentColor 45%, transparent);
+}
+.prod-price-row{ display:flex; align-items:flex-end; justify-content:space-between; gap:10px; margin-top:auto; padding-top:6px; }
+.prod-price b{ font-size:1.02rem; font-weight:800; color:var(--gold); }
+.prod-price s{ display:block; color:var(--muted); font-size:.76rem; }
+.prod-price .per{ color:var(--muted); font-size:.72rem; }
+.prod-actions{ display:flex; gap:8px; }
+.prod-actions .btn{ flex:1; }
+
+/* ── نوار استعلام چسبان ────────────────────────────────── */
+.quote-bar{
+  position:fixed; bottom:0; inset-inline:0; z-index:70;
+  transform:translateY(110%); transition:transform .3s ease;
+  background:rgba(12,12,22,.94);
+  backdrop-filter:blur(16px);
+  border-top:1px solid var(--brd);
+  padding:12px 0;
+}
+.quote-bar.show{ transform:none; }
+.quote-bar-in{ display:flex; align-items:center; gap:14px; }
+.quote-info b{ font-size:1rem; }
+.quote-info span{ color:var(--muted); font-size:.82rem; display:block; }
+.quote-bar .btn{ margin-inline-start:auto; }
+
+/* ── ردیف استعلام داخل مودال ───────────────────────────── */
+.q-item{
+  display:flex; align-items:center; gap:12px;
+  background:var(--glass); border:1px solid var(--brd);
+  border-radius:15px; padding:12px 14px; margin-bottom:10px;
+}
+.q-item .q-dot{
+  width:14px; height:14px; border-radius:5px; flex:none;
+  box-shadow:0 0 10px currentColor; background:currentColor;
+}
+.q-item .q-name{ font-size:.92rem; font-weight:600; flex:1; min-width:0; }
+.q-item .q-name small{ display:block; color:var(--muted); font-weight:400; font-size:.75rem; }
+.qty{ display:flex; align-items:center; gap:2px; background:rgba(255,255,255,.05); border:1px solid var(--brd); border-radius:10px; }
+.qty button{ width:30px; height:30px; font-size:1.05rem; color:var(--muted); transition:.15s; border-radius:8px; }
+.qty button:hover{ color:var(--text); background:var(--glass-2); }
+.qty b{ min-width:34px; text-align:center; font-size:.92rem; }
+.q-x{ width:30px; height:30px; border-radius:9px; color:var(--muted); font-size:1.1rem; transition:.15s; flex:none; }
+.q-x:hover{ color:#F87171; background:rgba(248,113,113,.1); }
+
+/* ── مودال جزئیات محصول ────────────────────────────────── */
+.pd-visual{
+  height:190px; border-radius:18px; margin-bottom:16px;
+  position:relative; overflow:hidden;
+  background:linear-gradient(90deg,#0d0d18,#12121f);
+  display:grid; place-items:center;
+}
+.pd-visual::before{
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(60% 90% at 50% 50%, color-mix(in srgb, var(--pc,#FFC966) 24%, transparent), transparent 75%);
+}
+.pd-visual .strip{ width:80%; height:14px; }
+.pd-swatches{ display:flex; gap:8px; position:absolute; bottom:14px; inset-inline-start:14px; }
+.pd-swatches button{
+  width:26px; height:26px; border-radius:50%;
+  border:2px solid rgba(255,255,255,.3); cursor:pointer;
+  box-shadow:0 0 10px color-mix(in srgb, currentColor 55%, transparent);
+  transition:.18s;
+}
+.pd-swatches button:hover{ transform:scale(1.15); }
+.pd-specs{
+  width:100%; border-collapse:collapse; font-size:.88rem;
+  margin:14px 0;
+}
+.pd-specs td{ padding:9px 4px; border-bottom:1px solid rgba(255,255,255,.06); }
+.pd-specs td:first-child{ color:var(--muted); width:110px; }
+.pd-desc{ color:var(--muted); font-size:.88rem; line-height:1.9; }
+
+/* ── ریسپانسیو ─────────────────────────────────────────── */
+@media (max-width:720px){
+  .shop-hero{ padding-top:36px; }
+  .shop-bar{ top:60px; }
+  .shop-bar-in{ gap:9px; }
+  .shop-tools{ margin-inline-start:0; width:100%; }
+  .shop-search{ flex:1; }
+  .shop-search input{ width:100%; max-width:none; }
+  .shop-count{ display:none; }
+  .shop-grid{ grid-template-columns:repeat(auto-fill,minmax(158px,1fr)); gap:12px; padding-bottom:120px; }
+  .prod-visual{ height:110px; }
+  .prod-body{ padding:12px 13px 14px; }
+  .prod-name{ font-size:.88rem; }
+  .prod-desc{ display:none; }
+  .prod-actions{ flex-direction:column; }
+  .quote-bar-in{ flex-wrap:wrap; gap:9px; }
+  .quote-bar .btn{ width:100%; margin-inline-start:0; }
+}

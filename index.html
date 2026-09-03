@@ -293,6 +293,7 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3h3l1.7 4.6-2.2 1.6a13.8 13.8 0 0 0 5.7 5.7l1.6-2.2L21 14.4v3A2.6 2.6 0 0 1 18.4 20 15.4 15.4 0 0 1 4 5.6 2.6 2.6 0 0 1 6.6 3z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
         ۰۹۱۲ ۱۲۳ ۴۵۶۷
       </a>
+      <a class="btn btn-outline btn-sm" href="auth.html" id="authLink">ورود / پنل</a>
       <a class="btn btn-primary btn-sm" href="#contact">مشاوره رایگان</a>
       <button class="hamburger" id="hamburger" aria-label="باز کردن منو" aria-expanded="false">
         <span></span><span></span><span></span>
@@ -307,13 +308,14 @@
     <a href="#home">خانه</a>
     <a href="#simulator">شبیه‌ساز نور</a>
     <a href="#services">خدمات</a>
-    <a href="#products">محصولات</a>
+    <a href="products.html">فروشگاه محصولات</a>
     <a href="#studio">استودیو ۳D</a>
     <a href="#portfolio">نمونه‌کارها</a>
     <a href="#about">درباره ما</a>
     <a href="#faq">سوالات متداول</a>
     <a href="#contact">تماس</a>
   </nav>
+  <a class="btn btn-outline drawer-cta" href="auth.html" id="authLinkMobile">ورود / ثبت‌نام</a>
   <a class="btn btn-primary drawer-cta" href="#contact">مشاوره رایگان</a>
   <a class="drawer-phone" href="tel:+989123456789" dir="ltr">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3h3l1.7 4.6-2.2 1.6a13.8 13.8 0 0 0 5.7 5.7l1.6-2.2L21 14.4v3A2.6 2.6 0 0 1 18.4 20 15.4 15.4 0 0 1 4 5.6 2.6 2.6 0 0 1 6.6 3z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
@@ -543,6 +545,11 @@
           <button class="btn btn-outline btn-sm" type="button" data-product="پروژکتور LED">استعلام قیمت</button>
         </div>
       </article>
+    </div>
+
+    <div class="shop-more" data-reveal>
+      <a class="btn btn-primary" href="products.html">مشاهده همه محصولات و قیمت‌ها</a>
+      <p class="shop-more-hint">۱۲+ مدل لاین نوری، نئون فلکس، پروفیل و درایور — استعلام آنلاین با پیش‌فاکتور کمتر از ۲ ساعت</p>
     </div>
   </div>
 </section>
@@ -956,8 +963,9 @@
       <a href="#home">خانه</a>
       <a href="#simulator">شبیه‌ساز نور</a>
       <a href="#studio">استودیو سه‌بعدی</a>
-      <a href="#products">محصولات</a>
+      <a href="products.html">فروشگاه و قیمت‌ها</a>
       <a href="#portfolio">نمونه‌کارها</a>
+      <a href="auth.html">پنل کاربری</a>
       <a href="#faq">سوالات متداول</a>
       <a href="#contact">مشاوره رایگان</a>
     </nav>
@@ -1029,6 +1037,8 @@
 <!-- ═══ اسکریپت‌ها (همه محلی — بدون CDN خارجی) ═══ -->
 <script defer src="js/vendor/gsap.min.js"></script>
 <script defer src="js/vendor/ScrollTrigger.min.js"></script>
+<script defer src="js/store.js"></script>
+<script defer src="js/ui.js"></script>
 <script defer src="js/main.js"></script>
 <script type="module" src="js/three-scene.js"></script>
 </body>
