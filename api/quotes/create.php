@@ -46,7 +46,7 @@ if (isset($in['items']) && is_array($in['items'])) {
 if (!$items) {
     lns_err('سبد استعلام خالی است.', 422);
 }
-$note = lns_str($in['note'] ?? ($in['message'] ?? ''), 0, 500) ?? '';
+$note = lns_clean($in['note'] ?? ($in['message'] ?? ''), 500);
 
 $pdo = lns_pdo();
 $chk = $pdo->prepare('SELECT id FROM products WHERE id = ? LIMIT 1');

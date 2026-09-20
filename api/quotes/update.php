@@ -15,7 +15,7 @@ $admin = lns_require_admin();
 $in = lns_input();
 $id = lns_str($in['id'] ?? '', 1, 64);
 $status = lns_enum($in['status'] ?? '', ['new', 'review', 'invoice', 'done', 'rejected']);
-$note = lns_str($in['adminNote'] ?? ($in['note'] ?? ''), 0, 400) ?? '';
+$note = lns_clean($in['adminNote'] ?? ($in['note'] ?? ''), 400);
 if ($id === null) {
     lns_err('شناسه استعلام لازم است.', 422);
 }

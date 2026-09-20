@@ -18,13 +18,13 @@ if (!$rl['allowed']) {
 }
 
 $in = lns_input();
-$name = lns_str($in['name'] ?? '', 3, 60);
+$name = lns_clean($in['name'] ?? '', 60);
 $phone = lns_norm_phone((string) ($in['phone'] ?? ''));
 $email = strtolower(trim((string) ($in['email'] ?? '')));
 $pass = (string) ($in['pass'] ?? '');
 $pass2 = (string) ($in['pass2'] ?? '');
 
-if ($name === null) {
+if (mb_strlen($name, 'UTF-8') < 3) {
     lns_err('نام را کامل وارد کنید (حداقل ۳ حرف).', 422);
 }
 if (!lns_is_phone($phone)) {

@@ -13,14 +13,14 @@ lns_check_csrf();
 $admin = lns_require_admin();
 
 $in = lns_input();
-$name = lns_str($in['name'] ?? '', 3, 80);
+$name = lns_clean($in['name'] ?? '', 80);
 $cat = lns_enum($in['cat'] ?? 'mono', ['mono', 'rgb', 'rgbw', 'cob', 'profile', 'driver']);
 $price = lns_int($in['price'] ?? '', 0, 1000000000);
 $stock = lns_int($in['stock'] ?? 0, 0, 1000000) ?? 0;
-$desc = lns_str($in['description'] ?? ($in['desc'] ?? ''), 0, 500) ?? '';
-$image = lns_str($in['image'] ?? '', 0, 255) ?? '';
+$desc = lns_clean($in['description'] ?? ($in['desc'] ?? ''), 500);
+$image = lns_clean($in['image'] ?? '', 255);
 
-if ($name === null) {
+if (mb_strlen($name, 'UTF-8') < 3) {
     lns_err('نام محصول باید ۳ تا ۸۰ حرف باشد.', 422);
 }
 if ($cat === null) {
