@@ -54,6 +54,7 @@ $routes = [
     '/auth/login' => __DIR__ . '/auth/login.php',
     '/auth/logout' => __DIR__ . '/auth/logout.php',
     '/auth/refresh' => __DIR__ . '/auth/refresh.php',
+    '/auth/me' => __DIR__ . '/auth/me.php',
     '/products/list' => __DIR__ . '/products/list.php',
     '/products/create' => __DIR__ . '/products/create.php',
     '/products/update' => __DIR__ . '/products/update.php',

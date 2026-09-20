@@ -38,7 +38,8 @@
     // گذرواژه ادمین هرگز در کد ذخیره نمی‌شود — در اولین اجرا ساخته می‌شود.
     ADMIN_EMAIL: TODO('ADMIN_EMAIL__example__admin@example.ir'),
     API: Object.freeze({
-      // پایه API بک‌اند PHP (فاز ۲ به بعد). خالی = حالت دموی localStorage
+      // پایه API بک‌اند PHP. خالی = همان‌مبدا (/api/).
+      // در تست محلی (فرانت :8000 + بک‌اند :8001) خودکار localhost:8001.
       BASE: ''
     })
   });

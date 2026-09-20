@@ -6,11 +6,11 @@
 
 (async function () {
 
-  await LNS.ready();
+  if (window.LNS) await LNS.ready();
   const { h, money, faNum, faDate, relTime, toast, badge, openModal } = UI;
 
-  const user = LNS.requireRole(null, 'dashboard.html');
-  if (!user) return;
+  const user = await API.me();
+  if (!user) { location.replace('auth.html?next=' + encodeURIComponent('dashboard.html')); return; }
 
   const $ = (s) => document.querySelector(s);
   const main = $('#pMain'), nav = $('#pNav');
@@ -36,15 +36,23 @@
     render(btn.dataset.view);
   });
 
-  $('#logoutBtn').addEventListener('click', () => {
-    LNS.logout();
+  $('#logoutBtn').addEventListener('click', async () => {
+    await API.logout();
     location.href = 'index.html';
   });
 
-  /* ── داده‌ها ──────────────────────────────────────────── */
-  const myQ = () => LNS.myQuotes(user.id);
-  const myM = () => LNS.myMessages(user.id);
-  const favList = () => LNS.favs(user.id).map(LNS.product).filter(Boolean);
+  /* ── داده‌ها (API-first + کش) ───────────────────────────── */
+  let Q = [], M = [], F = [];
+  try { Q = await API.myQuotes(user.id); } catch (_) { Q = []; }
+  try { M = await API.myMessages(user.id); } catch (_) { M = []; }
+  try {
+    const ids = API.favs(user.id);
+    const prods = await API.products().catch(() => []);
+    F = ids.map((id) => prods.find((p) => p.id === id)).filter(Boolean);
+  } catch (_) { F = []; }
+  const myQ = () => Q;
+  const myM = () => M;
+  const favList = () => F;
 
   const statusTone = { new: 'gold', review: 'cyan', invoice: 'violet', done: 'green', rejected: 'red' };
 
@@ -93,16 +101,16 @@
   function quoteCard(q) {
     const tone = statusTone[q.status] || 'muted';
     const flow = h('div', { class: 'q-flow' }, FLOW.map(s =>
-      h('div', { class: 'q-step' + (q.status === s ? ' hit' : (FLOW.indexOf(q.status) > FLOW.indexOf(s) ? ' hit' : '')), text: LNS.Q_STATUS[s] })
+      h('div', { class: 'q-step' + (q.status === s ? ' hit' : (FLOW.indexOf(q.status) > FLOW.indexOf(s) ? ' hit' : '')), text: API.Q_STATUS[s] })
     ));
     if (q.status === 'rejected') {
-      const bad = h('div', { class: 'q-step bad hit', text: LNS.Q_STATUS.rejected });
+      const bad = h('div', { class: 'q-step bad hit', text: API.Q_STATUS.rejected });
       flow.appendChild(bad);
     }
     return h('div', { class: 'table-wrap' }, [
       h('div', { class: 'quote-head' }, [
         h('b', { text: 'استعلام ' + relTime(q.createdAt) }),
-        badge(LNS.Q_STATUS[q.status], tone)
+        badge(API.Q_STATUS[q.status], tone)
       ]),
       h('div', { class: 'modal-body' }, [
         h('table', { class: 'pd-specs' },
@@ -149,14 +157,15 @@
       h('button', { class: 'btn btn-primary', type: 'submit', text: 'ارسال پیام' })
     );
     form.appendChild(inner);
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const v = ta.value.trim();
       if (!v) { toast('متن پیام خالی است.', 'err'); return; }
-      const res = LNS.saveMessage({ name: user.name, contact: user.phone || user.email, body: v, userId: user.id });
+      const res = await API.sendMessage({ name: user.name, contact: user.phone || user.email, body: v, userId: user.id });
       if (!res.ok) { toast(res.error, 'err'); return; }
       ta.value = '';
       toast('پیام ارسال شد — به‌زودی پاسخ می‌دهیم.', 'ok');
+      try { M = await API.myMessages(user.id); } catch (_) {}
       render('msgs');
     });
     body.appendChild(form);
@@ -240,6 +249,7 @@
       return h('div', { class: 'p-field' }, [h('label', { text: label }), input]);
     }
     async function saveProfile() {
+      if (!window.LNS) { toast('آفلاین — پروفایل فعلاً محلی ذخیره نمی‌شود.', 'err'); return; }
       const res = LNS.updateProfile(user.id, { name: nameI.value, phone: phoneI.value, email: emailI.value });
       if (!res.ok) { toast(res.error, 'err'); return; }
       toast('پروفایل به‌روزرسانی شد.', 'ok');
@@ -247,6 +257,7 @@
     }
     async function savePass() {
       if (newP.value !== newP2.value) { toast('تکرار گذرواژه مطابقت ندارد.', 'err'); return; }
+      if (!window.LNS) { toast('آفلاین — تغییر گذرواژه نیازمند اتصال است.', 'err'); return; }
       const res = await LNS.changePassword(user.id, curP.value, newP.value);
       if (!res.ok) { toast(res.error, 'err'); return; }
       curP.value = newP.value = newP2.value = '';
@@ -279,5 +290,6 @@
 
   render('dash');
   counters();
-  LNS.onSync(() => { counters(); });
+  if (window.LNS) LNS.onSync(() => { counters(); });
+  API.onMode(() => { counters(); });
 })();
