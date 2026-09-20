@@ -46,12 +46,25 @@
 
   /* ══ داده‌ها (API-first + کش محلی) ══════════════════════ */
   let D = { users: [], quotes: [], msgs: [], prods: [] };
+  let loadError = false;
   async function loadAll() {
-    try { D.prods = await API.products(); } catch (_) { D.prods = window.LNS ? LNS.products() : []; }
-    try { D.quotes = await API.quotes(); } catch (_) { D.quotes = window.LNS ? LNS.quotes() : []; }
-    try { D.msgs = await API.messages(); } catch (_) { D.msgs = window.LNS ? LNS.messages() : []; }
+    loadError = false;
+    try { D.prods = await API.products(); } catch (_) { D.prods = window.LNS ? LNS.products() : []; loadError = true; }
+    try { D.quotes = await API.quotes(); } catch (_) { D.quotes = window.LNS ? LNS.quotes() : []; loadError = true; }
+    try { D.msgs = await API.messages(); } catch (_) { D.msgs = window.LNS ? LNS.messages() : []; loadError = true; }
     try { D.users = await API.users(); }
-    catch (_) { D.users = window.LNS ? LNS.users() : []; }
+    catch (_) { D.users = window.LNS ? LNS.users() : []; loadError = true; }
+  }
+
+  function errBanner() {
+    if (!loadError) return null;
+    return h('div', { class: 'err-banner', role: 'alert' }, [
+      h('b', { text: 'حالت آفلاین — داده‌ها از کش محلی' }),
+      h('button', {
+        class: 'btn btn-outline btn-sm', type: 'button', text: 'تلاش مجدد',
+        onclick: async () => { await render(nav.querySelector('button.on')?.dataset.view || 'dash'); counters(); }
+      })
+    ]);
   }
 
   /* ══ داشبورد ════════════════════════════════════════════ */
@@ -407,6 +420,8 @@
   async function render(view) {
     await loadAll();
     main.textContent = '';
+    const banner = errBanner();
+    if (banner) main.appendChild(banner);
     main.appendChild(views[view]());
   }
 

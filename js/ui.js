@@ -121,4 +121,19 @@
   const cell = (t) => h('td', { text: t == null ? '' : String(t) });
 
   window.UI = { h, faNum, money, faDate, faTime, relTime, toast, openModal, badge, cell };
+
+  /* اعلان وضعیت اتصال (API ↔ آفلاین) */
+  if (window.API && API.onMode) {
+    let first = true;
+    API.onMode((m) => {
+      if (first) { first = false; return; } // حالت اولیه را اعلام نکن
+      if (m === 'offline') toast('اتصال به سرور قطع شد — حالت آفلاین با کش محلی.', 'err');
+      else {
+        toast('اتصال برقرار شد — صف آفلاین همگام می‌شود.', 'ok');
+        API.queue.flush().then((n) => {
+          if (n) toast(n === 1 ? '۱ عملیات آفلاین ارسال شد.' : faNum(n) + ' عملیات آفلاین ارسال شد.', 'ok');
+        }).catch(() => {});
+      }
+    });
+  }
 })();

@@ -13,6 +13,7 @@ import { UnrealBloomPass } from './vendor/addons/postprocessing/UnrealBloomPass.
 
 /* ── تنظیمات مشترک ── */
 const IS_MOBILE = matchMedia('(max-width: 768px)').matches;
+const REDUCED_3D = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const DPR = Math.min(window.devicePixelRatio || 1, IS_MOBILE ? 1.5 : 2);
 
 /* ساخت بافت هاله (گرادیان شعاعی روی بوم) */
@@ -69,28 +70,59 @@ function makeGlowStrip(w, h, color, tex, opacity = 0.3) {
   return new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat);
 }
 
-/* درگ برای چرخش دوربین (پارالکس لمسی) — اسکرول عمودی موبایل حفظ می‌شود */
+/* درگ برای چرخش دوربین (پارالکس لمسی) — اسکرول عمودی موبایل حفظ می‌شود
+   ژست‌ها: درگ = چرخش · پینچ دوانگشتی = زوم · دابل‌تپ/دابل‌کلیک = ریست */
 function makeOrbit(canvas, orb, maxYaw = 0.55, maxPitch = 0.3) {
+  orb.tzoom = orb.tzoom ?? 1;
+  orb.zoom = orb.zoom ?? 1;
   let dragging = false, px = 0, py = 0;
+  const pointers = new Map();
+  let pinchD0 = 0, pinchZ0 = 1, lastTap = 0;
   canvas.style.touchAction = 'pan-y';
   canvas.addEventListener('pointerdown', (e) => {
-    dragging = true; px = e.clientX; py = e.clientY;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pointers.size === 2) {
+      const [a, b] = [...pointers.values()];
+      pinchD0 = Math.hypot(a.x - b.x, a.y - b.y) || 1;
+      pinchZ0 = orb.tzoom;
+      dragging = false;
+    } else {
+      dragging = true; px = e.clientX; py = e.clientY;
+    }
     canvas.setPointerCapture && canvas.setPointerCapture(e.pointerId);
+    /* دابل‌تپ/دابل‌کلیک: ریست دوربین */
+    const now = performance.now();
+    if (now - lastTap < 320) reset();
+    lastTap = now;
   });
   window.addEventListener('pointermove', (e) => {
+    if (!pointers.has(e.pointerId)) return;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pointers.size === 2) {
+      const [a, b] = [...pointers.values()];
+      const d = Math.hypot(a.x - b.x, a.y - b.y) || 1;
+      orb.tzoom = THREE.MathUtils.clamp(pinchZ0 * pinchD0 / Math.max(d, 20), 0.6, 1.7);
+      return;
+    }
     if (!dragging) return;
     orb.tyaw   = THREE.MathUtils.clamp(orb.tyaw + (e.clientX - px) * 0.004, -maxYaw, maxYaw);
     orb.tpitch = THREE.MathUtils.clamp(orb.tpitch + (e.clientY - py) * 0.0025, -maxPitch * 0.7, maxPitch);
     px = e.clientX; py = e.clientY;
   }, { passive: true });
-  window.addEventListener('pointerup', () => { dragging = false; }, { passive: true });
-  window.addEventListener('pointercancel', () => { dragging = false; }, { passive: true });
+  const up = (e) => { pointers.delete(e.pointerId); if (pointers.size < 2) dragging = pointers.size === 1; };
+  window.addEventListener('pointerup', up, { passive: true });
+  window.addEventListener('pointercancel', up, { passive: true });
+  function reset() { orb.tyaw = 0; orb.tpitch = 0; orb.tzoom = 1; }
+  canvas.addEventListener('dblclick', reset);
+  return { reset };
 }
 
-/* بروزرسانی نرم زاویه‌های اوربیت */
+/* بروزرسانی نرم زاویه‌ها و زوم اوربیت */
 function easeOrbit(orb, dt) {
-  orb.yaw   += (orb.tyaw - orb.yaw) * Math.min(dt * 5, 1);
-  orb.pitch += (orb.tpitch - orb.pitch) * Math.min(dt * 5, 1);
+  const k = Math.min(dt * 5, 1);
+  orb.yaw   += (orb.tyaw - orb.yaw) * k;
+  orb.pitch += (orb.tpitch - orb.pitch) * k;
+  orb.zoom  += ((orb.tzoom ?? 1) - orb.zoom) * k;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -105,6 +137,15 @@ function initHero(canvas) {
   const scene = new THREE.Scene();
   scene.fog = new THREE.FogExp2(0x0a0a12, 0.05);
 
+  /* نورپردازی بهتر: هسته استاندارد با عمق + هاله محیطی */
+  scene.add(new THREE.AmbientLight(0x334, 0.7));
+  const keyLight = new THREE.PointLight(0xffb800, 30, 30, 1.8);
+  keyLight.position.set(3, 2.5, 1.5);
+  scene.add(keyLight);
+  const rimLight = new THREE.PointLight(0x00d4ff, 22, 30, 1.8);
+  rimLight.position.set(-4, -1.5, 0.5);
+  scene.add(rimLight);
+
   const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
   camera.position.set(0, 0, 9);
 
@@ -115,7 +156,10 @@ function initHero(canvas) {
   const star = new THREE.Group();
   star.position.set(0, 0.25, -3.5);
 
-  const coreMat = new THREE.MeshBasicMaterial({ color: 0xffcf5e, fog: false });
+  const coreMat = new THREE.MeshStandardMaterial({
+    color: 0xffcf5e, emissive: 0xff9d00, emissiveIntensity: 1.6,
+    roughness: 0.35, metalness: 0.55, fog: false
+  });
   const core = new THREE.Mesh(new THREE.IcosahedronGeometry(0.5, 1), coreMat);
   star.add(core);
 
@@ -235,9 +279,14 @@ function initHero(canvas) {
       varying float vAlpha;
       void main() {
         vColor = aColor;
-        vec4 mv = modelViewMatrix * vec4(position, 1.0);
+        vec3 p = position;
+        /* رانش ملایم محیطی — کیفیت سینمایی */
+        p.x += sin(uTime * 0.22 + aPhase * 1.7) * 0.35;
+        p.y += cos(uTime * 0.17 + aPhase * 2.3) * 0.28;
+        vec4 mv = modelViewMatrix * vec4(p, 1.0);
         float tw = sin(uTime * aSpeed + aPhase) * 0.5 + 0.5;
-        vAlpha = 0.25 + 0.75 * tw;
+        tw = tw * tw * (3.0 - 2.0 * tw); /* نرم‌سازی سوسو */
+        vAlpha = 0.2 + 0.8 * tw;
         gl_PointSize = aSize * uPixelRatio * (14.0 / -mv.z);
         gl_Position = projectionMatrix * mv;
       }`,
@@ -254,6 +303,22 @@ function initHero(canvas) {
   });
   const points = new THREE.Points(pGeo, pMat);
   scene.add(points);
+
+  /* ── لایه دوم: غبار محیطی کم‌نور (عمق سینمایی) ── */
+  const D2 = IS_MOBILE ? 60 : 140;
+  const d2Pos = new Float32Array(D2 * 3);
+  for (let i = 0; i < D2; i++) {
+    d2Pos[i * 3]     = (Math.random() - 0.5) * 20;
+    d2Pos[i * 3 + 1] = (Math.random() - 0.5) * 11;
+    d2Pos[i * 3 + 2] = -3 - Math.random() * 9;
+  }
+  const d2Geo = new THREE.BufferGeometry();
+  d2Geo.setAttribute('position', new THREE.BufferAttribute(d2Pos, 3));
+  const dust2 = new THREE.Points(d2Geo, new THREE.PointsMaterial({
+    size: 0.35, map: glowTex, color: 0x8b9cc8, transparent: true, opacity: 0.16,
+    blending: THREE.AdditiveBlending, depthWrite: false, fog: false, sizeAttenuation: true
+  }));
+  scene.add(dust2);
 
   /* ── دنباله‌های نور (کومت‌های سینمایی) ── */
   const trails = [];
@@ -294,8 +359,10 @@ function initHero(canvas) {
   const { composer, bloom } = makeComposer(renderer, scene, camera, 1.2, 0.75, 0.1);
   watchResize(canvas, renderer, composer, camera);
 
-  /* ── موس (پارالکس نرم) ── */
+  /* ── موس (پارالکس نرم) + پینچ زوم ── */
   const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
+  const heroOrb = {};
+  makeOrbit(canvas, heroOrb, 0, 0); // فقط زوم/ریست؛ چرخش با موس است
   window.addEventListener('pointermove', (e) => {
     mouse.tx = (e.clientX / window.innerWidth - 0.5) * 2;
     mouse.ty = (e.clientY / window.innerHeight - 0.5) * 2;
@@ -313,18 +380,21 @@ function initHero(canvas) {
     if (!visible) return;
 
     const dt = Math.min(clock.getDelta(), 0.05);
-    t += dt;
+    if (!REDUCED_3D) t += dt;
 
     /* ستاره: چرخش برند + تپش قلب */
-    star.rotation.y += dt * 0.28;
-    wire.rotation.x -= dt * 0.18;
-    wire.rotation.z += dt * 0.12;
+    if (!REDUCED_3D) {
+      star.rotation.y += dt * 0.28;
+      wire.rotation.x -= dt * 0.18;
+      wire.rotation.z += dt * 0.12;
+    }
     const pulse = 1 + Math.sin(t * 1.9) * 0.06;
     core.scale.setScalar(pulse);
     starGlowMat.opacity = 0.42 + Math.sin(t * 1.9) * 0.1 + progress * 0.08;
 
     /* نقاط مداری */
-    for (const d of orbiters) {
+    if (!REDUCED_3D) {
+      for (const d of orbiters) {
       const a = t * d.userData.speed + d.userData.phase;
       const rr = 1.95;
       if (d.userData.ring === ring1) {
@@ -332,9 +402,11 @@ function initHero(canvas) {
       } else {
         d.position.set(Math.cos(a) * rr, Math.sin(a) * rr * 0.42, Math.sin(a) * rr * 0.3);
       }
+      }
     }
 
     /* شناوری خطوط نور */
+    if (!REDUCED_3D) {
     for (const m of lines) {
       const u = m.userData;
       m.position.y = u.baseY + Math.sin(t * u.speed + u.phase) * 0.45;
@@ -352,6 +424,7 @@ function initHero(canvas) {
       tr.curve.getPointAt(p, tr.comet.position);
       tr.cometMat.opacity = 0.55 + Math.sin(p * Math.PI) * 0.4;
     }
+    } /* پایان حرکات خودکار (احترام به reduced-motion) */
 
     /* پارالکس موس */
     mouse.x += (mouse.tx - mouse.x) * 0.04;
@@ -359,8 +432,9 @@ function initHero(canvas) {
     camera.position.x = mouse.x * 0.9;
     camera.position.y = -mouse.y * 0.55;
 
-    /* حرکت دوربین با اسکرول + رول سینمایی */
-    camera.position.z = 9 + progress * 7.5;
+    /* حرکت دوربین با اسکرول + رول سینمایی (+ زوم پینچ) */
+    easeOrbit(heroOrb, dt);
+    camera.position.z = (9 + progress * 7.5) / (heroOrb.zoom || 1);
     star.position.y = 0.25 + progress * 2.2;
     linesGroup.rotation.z = progress * 0.1;
     points.rotation.x = progress * 0.05;
@@ -488,6 +562,19 @@ function initSimulator(canvas) {
   underGlow.position.set(1.9, -2.06, -2.9);
   scene.add(underGlow);
 
+  /* ── نوار کانفیگوراتور محصول (طول انتخابی کاربر) ── */
+  const cfgGroup = new THREE.Group();
+  const cfgMat = new THREE.MeshBasicMaterial({ color: WARM, fog: false });
+  const cfgStrip = new THREE.Mesh(new THREE.CapsuleGeometry(0.05, 2.7, 4, 10), cfgMat);
+  cfgStrip.rotation.z = Math.PI / 2;
+  cfgGroup.add(cfgStrip);
+  const cfgGlow = makeGlowStrip(3.4, 1.1, WARM, glowTex, 0.3);
+  cfgGroup.add(cfgGlow);
+  cfgGroup.position.set(0, -0.55, -1.1);
+  scene.add(cfgGroup);
+  let cfgMeters = 3;
+  const PRICE_PER_M = 185000, WATT_PER_M = 8;
+
   /* ── غبار نورانی ── */
   const DUST = IS_MOBILE ? 70 : 130;
   const dPos = new Float32Array(DUST * 3);
@@ -535,9 +622,9 @@ function initSimulator(canvas) {
     if (!visible) return;
 
     const dt = Math.min(clock.getDelta(), 0.05);
-    t += dt;
+    if (!REDUCED_3D) t += dt;
 
-    if (state.rgb) {
+    if (state.rgb && !REDUCED_3D) {
       state.hue = (state.hue + dt * 0.12) % 1;
       state.target.setHSL(state.hue, 1, 0.55);
     }
@@ -546,6 +633,8 @@ function initSimulator(canvas) {
 
     const k = 0.3 + state.brightness * 1.5;
     for (const m of lit) m.color.copy(state.current).multiplyScalar(k * 1.4);
+    cfgMat.color.copy(state.current).multiplyScalar(k * 1.4);
+    cfgGlow.material.color.copy(tint);
     coveGlow.material.color.copy(tint);
     coveGlowFloor.material.color.copy(tint);
     washerGlow.material.color.copy(tint);
@@ -560,12 +649,13 @@ function initSimulator(canvas) {
 
     /* دوربین اوربیت نرم + تابش ملایم خودکار وقتی کاربر درگ نمی‌کند */
     easeOrbit(orb, dt);
-    const sway = orb.tyaw === 0 && orb.tpitch === 0 ? Math.sin(t * 0.3) * 0.06 : 0;
+    const sway = !REDUCED_3D && orb.tyaw === 0 && orb.tpitch === 0 ? Math.sin(t * 0.3) * 0.06 : 0;
     const yaw = orb.yaw + sway;
+    const simR = CAM_R / (orb.zoom || 1);
     camera.position.set(
-      Math.sin(yaw) * CAM_R,
+      Math.sin(yaw) * simR,
       1.0 + orb.pitch * 4.2,
-      Math.cos(yaw) * CAM_R
+      Math.cos(yaw) * simR
     );
     camera.lookAt(0, 0.35, 0);
 
@@ -578,7 +668,15 @@ function initSimulator(canvas) {
       if (mode === 'rgb') state.rgb = true;
       else if (KELVIN[mode]) { state.rgb = false; state.target.copy(KELVIN[mode]); }
     },
-    setBrightness(v) { state.brightness = THREE.MathUtils.clamp(v, 0, 1); }
+    setBrightness(v) { state.brightness = THREE.MathUtils.clamp(v, 0, 1); },
+    setLength(m) {
+      cfgMeters = THREE.MathUtils.clamp(Number(m) || 3, 1, 5);
+      cfgGroup.scale.x = cfgMeters / 3;
+    },
+    quote(m) {
+      const meters = THREE.MathUtils.clamp(Number(m) || cfgMeters, 1, 5);
+      return { meters, price: meters * PRICE_PER_M, power: meters * WATT_PER_M };
+    }
   };
 }
 
@@ -594,6 +692,15 @@ function initStudio(canvas) {
   const scene = new THREE.Scene();
   scene.fog = new THREE.FogExp2(0x07070d, 0.04);
 
+  /* متریال واقعی‌تر + نور محیطی ملایم */
+  scene.add(new THREE.AmbientLight(0x8a93b8, 0.85));
+  const spotWarm = new THREE.PointLight(0xffd28a, 26, 26, 1.8);
+  spotWarm.position.set(2.5, 3.2, 2.5);
+  scene.add(spotWarm);
+  const spotCool = new THREE.PointLight(0x00d4ff, 18, 26, 1.8);
+  spotCool.position.set(-3, 2.2, 2);
+  scene.add(spotCool);
+
   const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 60);
   const orb = { yaw: 0, pitch: 0, tyaw: 0, tpitch: 0 };
   makeOrbit(canvas, orb, 0.5, 0.22);
@@ -602,12 +709,18 @@ function initStudio(canvas) {
   const glowTex = makeGlowTexture();
 
   /* ── پوسته مشترک ── */
-  const floor = new THREE.Mesh(new THREE.PlaneGeometry(14, 9), new THREE.MeshBasicMaterial({ color: 0x0b0b14 }));
+  const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(14, 9),
+    new THREE.MeshStandardMaterial({ color: 0x14141f, roughness: 0.55, metalness: 0.3 })
+  );
   floor.rotation.x = -Math.PI / 2;
   floor.position.y = -1.9;
   scene.add(floor);
 
-  const backWall = new THREE.Mesh(new THREE.PlaneGeometry(14, 7.5), new THREE.MeshBasicMaterial({ color: 0x10101c }));
+  const backWall = new THREE.Mesh(
+    new THREE.PlaneGeometry(14, 7.5),
+    new THREE.MeshStandardMaterial({ color: 0x171722, roughness: 0.8, metalness: 0.1 })
+  );
   backWall.position.set(0, 0.8, -3.4);
   scene.add(backWall);
 
@@ -803,26 +916,27 @@ function initStudio(canvas) {
     if (!visible) return;
 
     const dt = Math.min(clock.getDelta(), 0.05);
-    t += dt;
+    if (!REDUCED_3D) t += dt;
 
     /* ستاره‌باران: چشمک */
-    if (hotel.visible && stars) {
+    if (!REDUCED_3D && hotel.visible && stars) {
       stars.material.opacity = 0.75 + Math.sin(t * 2.1) * 0.18;
     }
 
     /* چرخش آرام حلقه روسری نشیمن */
-    if (living.visible) {
+    if (!REDUCED_3D && living.visible) {
       living.children.forEach(o => {
         if (o.geometry && o.geometry.type === 'TorusGeometry') o.rotation.z += dt * 0.15;
       });
     }
 
-    /* دوربین */
+    /* دوربین (+ زوم پینچ) */
     easeOrbit(orb, dt);
     camRT = 9.5;
     camR += (camRT - camR) * Math.min(dt * 2.2, 1);
-    const yaw = orb.yaw + Math.sin(t * 0.25) * 0.05;
-    camera.position.set(Math.sin(yaw) * camR, 1.35 + orb.pitch * 3.6, Math.cos(yaw) * camR);
+    const yaw = orb.yaw + (!REDUCED_3D ? Math.sin(t * 0.25) * 0.05 : 0);
+    const studioR = camR / (orb.zoom || 1);
+    camera.position.set(Math.sin(yaw) * studioR, 1.35 + orb.pitch * 3.6, Math.cos(yaw) * studioR);
     camera.lookAt(0, 0.25, -0.2);
 
     composer.render();
@@ -831,8 +945,19 @@ function initStudio(canvas) {
 
   window.Linenory3D.studio = {
     setRoom(name) {
-      Object.entries(ROOMS).forEach(([key, g]) => { g.visible = key === name; });
-      camR = 10.6;   /* پول‌بک سینمایی هنگام تعویض */
+      const canvasEl = canvas;
+      /* گذار نرم: محو + پول‌بک سینمایی */
+      if (!REDUCED_3D) {
+        canvasEl.classList.add('room-fade');
+        setTimeout(() => {
+          Object.entries(ROOMS).forEach(([key, g]) => { g.visible = key === name; });
+          camR = 10.6;
+          requestAnimationFrame(() => requestAnimationFrame(() => canvasEl.classList.remove('room-fade')));
+        }, 180);
+      } else {
+        Object.entries(ROOMS).forEach(([key, g]) => { g.visible = key === name; });
+        camR = 10.6;
+      }
     }
   };
 }

@@ -45,6 +45,9 @@
   let Q = [], M = [], F = [];
   try { Q = await API.myQuotes(user.id); } catch (_) { Q = []; }
   try { M = await API.myMessages(user.id); } catch (_) { M = []; }
+  if (API.mode() === 'offline' && !Q.length && !M.length) {
+    toast('آفلاین هستید — داده‌ها از کش محلی نمایش داده می‌شود.', 'err');
+  }
   try {
     const ids = API.favs(user.id);
     const prods = await API.products().catch(() => []);
