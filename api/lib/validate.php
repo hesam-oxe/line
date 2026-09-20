@@ -90,3 +90,12 @@ function lns_slug(string $name): string
     $s = trim($s, '-');
     return mb_substr($s === '' ? 'item' : $s, 0, 100, 'UTF-8');
 }
+
+/* سانیتایز ضدXSS (دفاع لایه‌ای؛ خروجی textContent هم امن است) */
+function lns_clean(mixed $v, int $max): string
+{
+    $s = (string) ($v ?? '');
+    $s = str_replace(['<', '>', '`', '\\', '{', '}', '$'], '', $s);
+    $s = trim(preg_replace('/\s+/u', ' ', $s) ?? '');
+    return mb_substr($s, 0, $max, 'UTF-8');
+}

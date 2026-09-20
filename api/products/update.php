@@ -21,8 +21,8 @@ if ($id === null) {
 $fields = [];
 $args = [];
 if (array_key_exists('name', $in)) {
-    $v = lns_str($in['name'], 3, 80);
-    if ($v === null) {
+    $v = lns_clean($in['name'], 80);
+    if (mb_strlen($v, 'UTF-8') < 3 || mb_strlen($v, 'UTF-8') > 80) {
         lns_err('نام محصول باید ۳ تا ۸۰ حرف باشد.', 422);
     }
     $fields[] = 'name = ?';
@@ -49,10 +49,7 @@ foreach (['price' => [0, 1000000000], 'stock' => [0, 1000000]] as $k => [$mn, $m
 foreach (['description' => 500, 'desc' => 500, 'image' => 255] as $k => $mx) {
     if (array_key_exists($k, $in)) {
         $col = $k === 'desc' ? 'description' : $k;
-        $v = lns_str($in[$k], 0, $mx);
-        if ($v === null) {
-            lns_err("مقدار $k نامعتبر است.", 422);
-        }
+        $v = lns_clean($in[$k], $mx);
         $fields[] = "$col = ?";
         $args[] = $v;
     }

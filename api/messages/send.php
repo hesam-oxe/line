@@ -13,10 +13,10 @@ lns_check_csrf();
 $u = lns_require_auth();
 
 $in = lns_input();
-$body = lns_str($in['body'] ?? '', 1, 600);
-$subject = lns_str($in['subject'] ?? '', 0, 120) ?? '';
+$body = lns_clean($in['body'] ?? '', 600);
+$subject = lns_clean($in['subject'] ?? '', 120);
 $to = lns_str($in['to_user'] ?? '', 0, 64) ?? '';
-if ($body === null) {
+if (mb_strlen($body, 'UTF-8') < 1) {
     lns_err('متن پیام خالی است (۱ تا ۶۰۰ حرف).', 422);
 }
 
