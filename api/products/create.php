@@ -1,15 +1,40 @@
 <?php
-/* ═══ لاین نوری استار — استاب: ایجاد محصول (ادمین) (/products/create) ═══
-   وضعیت فاز ۲: فقط ۵۰۱ Not Implemented. منطق در فاز ۳.
-   فاز ۳: احراز نقش admin + اعتبارسنجی + INSERT + audit.
-   امنیت فاز ۳: PDO prepared + CSRF + rate-limit + نشست چرخشی. */
+/* ═══ ایجاد محصول (ادمین) ═══ */
 declare(strict_types=1);
 
-header('Content-Type: application/json; charset=utf-8');
-http_response_code(501);
-echo json_encode([
-    'ok' => false,
-    'error' => 'پیاده‌سازی نشده (Not Implemented).',
-    'endpoint' => '/products/create',
-    'phase' => 2,
-], JSON_UNESCAPED_UNICODE);
+require_once __DIR__ . '/../lib/response.php';
+require_once __DIR__ . '/../lib/validate.php';
+require_once __DIR__ . '/../lib/db.php';
+require_once __DIR__ . '/../lib/auth.php';
+require_once __DIR__ . '/../lib/audit.php';
+
+lns_method(['POST']);
+lns_check_csrf();
+$admin = lns_require_admin();
+
+$in = lns_input();
+$name = lns_str($in['name'] ?? '', 3, 80);
+$cat = lns_enum($in['cat'] ?? 'mono', ['mono', 'rgb', 'rgbw', 'cob', 'profile', 'driver']);
+$price = lns_int($in['price'] ?? '', 0, 1000000000);
+$stock = lns_int($in['stock'] ?? 0, 0, 1000000) ?? 0;
+$desc = lns_str($in['description'] ?? ($in['desc'] ?? ''), 0, 500) ?? '';
+$image = lns_str($in['image'] ?? '', 0, 255) ?? '';
+
+if ($name === null) {
+    lns_err('نام محصول باید ۳ تا ۸۰ حرف باشد.', 422);
+}
+if ($cat === null) {
+    lns_err('دسته نامعتبر است.', 422);
+}
+if ($price === null) {
+    lns_err('قیمت نامعتبر است.', 422);
+}
+
+$pdo = lns_pdo();
+$id = lns_uuid();
+$slug = lns_slug($name) . '-' . substr(str_replace('-', '', $id), 0, 8);
+$now = lns_now_ms();
+$ins = $pdo->prepare('INSERT INTO products (id,slug,name,description,price,category,image,stock,created_at) VALUES (?,?,?,?,?,?,?,?,?)');
+$ins->execute([$id, $slug, $name, $desc, $price, $cat, $image, $stock, $now]);
+lns_audit($admin['id'], 'product_create', $id);
+lns_ok(['id' => $id, 'slug' => $slug], 201);

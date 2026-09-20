@@ -4,12 +4,39 @@
    آپاچی: via .htaccess همه درخواست‌ها به اینجا می‌آیند.
    سرور داخلی PHP: با حالت روتر اجرا کنید:
      php -S localhost:8001 api/index.php
-   فاز ۲: فقط مسیریابی + استاب ۵۰۱. منطق در فاز ۳.
+   فاز ۳: مسیریابی + نرخ‌محدود عمومی + CSRF ناشناس + CORS محلی.
    ═══════════════════════════════════════════════════════════ */
 declare(strict_types=1);
 
-header('Content-Type: application/json; charset=utf-8');
+require_once __DIR__ . '/lib/response.php';
+require_once __DIR__ . '/lib/rate_limit.php';
+require_once __DIR__ . '/lib/auth.php';
+
 header('X-Content-Type-Options: nosniff');
+
+// ── CORS فقط برای تست محلی (فرانت :8000 → API :8001) ──
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+if ($origin === 'http://localhost:8000') {
+    header('Access-Control-Allow-Origin: http://localhost:8000');
+    header('Access-Control-Allow-Credentials: true');
+    header('Access-Control-Allow-Headers: Content-Type, X-CSRF-Token');
+    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+    if (strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'OPTIONS') {
+        http_response_code(204);
+        exit;
+    }
+}
+
+// ── نرخ‌محدود عمومی: ۱۰۰ درخواست/دقیقه به‌ازای IP ──
+$rl = lns_rl_check('general:' . lns_client_ip(), 100, 60);
+if (!$rl['allowed']) {
+    lns_err('درخواست‌های بیش از حد.', 429, ['retry_after' => $rl['retry_after']]);
+}
+
+// ── صدور کوکی CSRF ناشناس برای فرم‌های ورود/ثبت‌نام ──
+if (strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET') {
+    lns_issue_anon_csrf();
+}
 
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 $uri = $_SERVER['REQUEST_URI'] ?? '/';
@@ -19,7 +46,7 @@ if ($path === '/') {
     $path = '/index';
 }
 
-// ── نگاشت مسیر تمیز به فایل استاب ──
+// ── نگاشت مسیر تمیز به فایل ──
 $routes = [
     '/index' => null, // همین فایل (راهنما)
     '/health' => null, // سلامت (پیاده‌سازی‌شده برای تست محلی)
@@ -41,38 +68,25 @@ $routes = [
 ];
 
 if ($path === '/health') {
-    http_response_code(200);
-    echo json_encode([
-        'ok' => true,
+    lns_ok([
         'service' => 'linenory-api',
         'env' => 'local',
-        'phase' => 2,
+        'phase' => 3,
         'time' => date('c'),
-    ], JSON_UNESCAPED_UNICODE);
-    exit;
+    ]);
 }
 
 if ($path === '/index') {
-    http_response_code(200);
-    echo json_encode([
-        'ok' => true,
+    lns_ok([
         'service' => 'لاین نوری استار — API',
-        'phase' => 2,
-        'note' => 'اسکافولد فقط؛ همه endpointها استاب ۵۰۱ هستند.',
+        'phase' => 3,
+        'note' => 'بک‌اند پیاده‌سازی‌شده (SQLite محلی / MySQL تولیدی).',
         'endpoints' => array_values(array_filter(array_keys($routes), fn($r) => $r !== '/index')),
-    ], JSON_UNESCAPED_UNICODE);
-    exit;
+    ]);
 }
 
 if (!array_key_exists($path, $routes) || $routes[$path] === null) {
-    http_response_code(404);
-    echo json_encode([
-        'ok' => false,
-        'error' => 'مسیر یافت نشد.',
-        'path' => $path,
-        'method' => $method,
-    ], JSON_UNESCAPED_UNICODE);
-    exit;
+    lns_err('مسیر یافت نشد.', 404, ['path' => $path, 'method' => $method]);
 }
 
 require $routes[$path];

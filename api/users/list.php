@@ -1,15 +1,19 @@
 <?php
-/* ═══ لاین نوری استار — استاب: فهرست کاربران (ادمین) (/users/list) ═══
-   وضعیت فاز ۲: فقط ۵۰۱ Not Implemented. منطق در فاز ۳.
-   فاز ۳: فقط admin + صفحه‌بندی، بدون password_hash.
-   امنیت فاز ۳: PDO prepared + CSRF + rate-limit + نشست چرخشی. */
+/* ═══ فهرست کاربران (ادمین، بدون password_hash) ═══ */
 declare(strict_types=1);
 
-header('Content-Type: application/json; charset=utf-8');
-http_response_code(501);
-echo json_encode([
-    'ok' => false,
-    'error' => 'پیاده‌سازی نشده (Not Implemented).',
-    'endpoint' => '/users/list',
-    'phase' => 2,
-], JSON_UNESCAPED_UNICODE);
+require_once __DIR__ . '/../lib/response.php';
+require_once __DIR__ . '/../lib/validate.php';
+require_once __DIR__ . '/../lib/db.php';
+require_once __DIR__ . '/../lib/auth.php';
+
+lns_method(['GET']);
+lns_require_admin();
+
+$limit = lns_int($_GET['limit'] ?? 50, 1, 100) ?? 50;
+$offset = lns_int($_GET['offset'] ?? 0, 0, 100000) ?? 0;
+
+$pdo = lns_pdo();
+$st = $pdo->prepare('SELECT id,name,phone,email,role,status,created_at,last_login FROM users ORDER BY created_at DESC LIMIT ' . $limit . ' OFFSET ' . $offset);
+$st->execute();
+lns_ok(['items' => $st->fetchAll()]);
