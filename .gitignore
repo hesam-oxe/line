@@ -1,1 +1,4 @@
 server.log
+api/config.php
+.env
+*.log
