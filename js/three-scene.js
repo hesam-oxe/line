@@ -40,15 +40,21 @@ function makeComposer(renderer, scene, camera, strength, radius, threshold) {
 }
 
 function watchResize(canvas, renderer, composer, camera) {
+  let raf = 0;
   const onResize = () => {
-    const w = canvas.clientWidth || window.innerWidth;
-    const h = canvas.clientHeight || window.innerHeight;
-    renderer.setSize(w, h, false);
-    composer.setSize(w, h);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
+    /* دیبانس via rAF: یک ریسایز در هر فریم */
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = 0;
+      const w = canvas.clientWidth || window.innerWidth;
+      const h = canvas.clientHeight || window.innerHeight;
+      renderer.setSize(w, h, false);
+      composer.setSize(w, h);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    });
   };
-  window.addEventListener('resize', onResize);
+  window.addEventListener('resize', onResize, { passive: true });
   onResize();
   return () => window.removeEventListener('resize', onResize);
 }

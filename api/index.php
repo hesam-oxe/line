@@ -66,6 +66,7 @@ $routes = [
     '/messages/list' => __DIR__ . '/messages/list.php',
     '/users/list' => __DIR__ . '/users/list.php',
     '/users/update' => __DIR__ . '/users/update.php',
+    '/sitemap' => __DIR__ . '/sitemap.php',
 ];
 
 if ($path === '/health') {
