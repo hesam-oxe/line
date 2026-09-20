@@ -7,7 +7,7 @@
 (async function () {
 
   const { h, money, faNum, toast, openModal } = UI;
-  await LNS.ready();
+  if (window.LNS) await LNS.ready();
 
   const $ = (s) => document.querySelector(s);
   const grid = $('#grid'), chipsBox = $('#chips'), qInput = $('#q'),
@@ -17,7 +17,10 @@
   const state = { cat: 'all', q: '', sort: 'pop' };
   const CART_KEY = 'lns:v1:cart';
   let cart = loadCart();                    /* {productId: qty} */
-  const user = LNS.me();
+  const user = await API.me();
+  let allProducts = [];
+  try { allProducts = await API.products(); }
+  catch (_) { allProducts = []; }
 
   function loadCart() {
     try { return JSON.parse(localStorage.getItem(CART_KEY)) || {}; }
@@ -26,7 +29,7 @@
   const saveCart = () => { try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch (_) {} };
 
   /* ── چیپ‌های دسته‌بندی ─────────────────────────────────── */
-  const catList = [['all', 'همه محصولات']].concat(Object.entries(LNS.CATS));
+  const catList = [['all', 'همه محصولات']].concat(Object.entries(API.CATS));
   chipsBox.append(...catList.map(([id, label]) =>
     h('button', {
       class: 'chip' + (id === 'all' ? ' on' : ''), type: 'button',
@@ -46,11 +49,14 @@
   sortSel.addEventListener('change', () => { state.sort = sortSel.value; render(); });
 
   /* ── منطق داده ────────────────────────────────────────── */
+  const fa2en = (s) => String(s == null ? '' : s)
+    .replace(/[۰-۹]/g, (d) => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
+    .replace(/[٠-٩]/g, (d) => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
   function filtered() {
-    let list = LNS.products().slice();
+    let list = allProducts.slice();
     if (state.cat !== 'all') list = list.filter(p => p.cat === state.cat);
     if (state.q) {
-      const q = LNS.toEn(state.q).toLowerCase();
+      const q = fa2en(state.q).toLowerCase();
       list = list.filter(p => (p.name + ' ' + (p.desc || '') + ' ' + p.cat).toLowerCase().includes(q));
     }
     if (state.sort === 'cheap') list.sort((a, b) => a.price - b.price);
@@ -61,7 +67,7 @@
   }
   const offPct = (p) => (p.oldPrice && p.oldPrice > p.price) ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
 
-  const isFav = (id) => user && LNS.favs(user.id).includes(id);
+  const isFav = (id) => user && API.favs(user.id).includes(id);
 
   function toggleFav(id, btn) {
     if (!user) {
@@ -69,7 +75,7 @@
       setTimeout(() => location.href = 'auth.html?next=' + encodeURIComponent('products.html'), 900);
       return;
     }
-    const added = LNS.toggleFav(user.id, id);
+    const added = API.toggleFav(user.id, id);
     btn.classList.toggle('on', added);
     toast(added ? 'به علاقه‌مندی‌ها اضافه شد.' : 'از علاقه‌مندی‌ها حذف شد.', added ? 'ok' : 'info');
   }
@@ -138,7 +144,7 @@
       ]),
       h('table', { class: 'pd-specs' }, [
         row('نام محصول', p.name),
-        row('دسته', (LNS.CATS[p.cat] || p.cat)),
+        row('دسته', (API.CATS[p.cat] || p.cat)),
         row('قیمت هر متر', money(p.price)),
         p.oldPrice > p.price ? row('قیمت قبل از تخفیف', money(p.oldPrice)) : null,
         p.watt !== '—' ? row('توان', p.watt) : null,
@@ -172,7 +178,7 @@
   function quoteItems() {
     return Object.entries(cart)
       .map(([pid, qty]) => {
-        const p = LNS.product(pid);
+        const p = allProducts.find((x) => x.id === pid);
         return {
           productId: pid,
           name: p ? p.name : '',
@@ -252,13 +258,13 @@
     });
 
     async function submit() {
-      const u = LNS.me();
+      const u = await API.me();
       if (!u) {
         toast('برای ثبت استعلام باید وارد حساب شوید.', 'info');
         setTimeout(() => location.href = 'auth.html?next=' + encodeURIComponent('products.html'), 900);
         return;
       }
-      const res = LNS.createQuote({
+      const res = await API.createQuote({
         userId: u.id,
         items: quoteItems().map(x => ({ productId: x.productId, name: x.name, qty: x.qty })),
         note: noteEl.value
@@ -313,13 +319,13 @@
   /* ── اسکیمای داینامیک Product/ItemList (همیشه به‌روز) ──── */
   (function schema() {
     const base = 'https://hesam-oxe.github.io/line/products.html';
-    const items = LNS.products().slice(0, 20).map((p, i) => ({
+    const items = allProducts.slice(0, 20).map((p, i) => ({
       '@type': 'ListItem', position: i + 1,
       item: {
         '@type': 'Product',
         name: p.name,
-        description: (p.desc || 'لاین نوری استار — ' + (LNS.CATS[p.cat] || '')).slice(0, 220),
-        category: LNS.CATS[p.cat] || p.cat,
+        description: (p.desc || 'لاین نوری استار — ' + (API.CATS[p.cat] || '')).slice(0, 220),
+        category: API.CATS[p.cat] || p.cat,
         image: 'https://hesam-oxe.github.io/line/assets/img/og-cover.jpg',
         brand: { '@type': 'Brand', name: 'لاین نوری استار' },
         offers: {

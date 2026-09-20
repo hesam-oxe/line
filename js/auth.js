@@ -1,16 +1,19 @@
 /* ═══════════════════════════════════════════════════════════
-   لاین نوری استار — منطق صفحه ورود / ثبت‌نام
+   لاین نوری استار — منطق صفحه ورود / ثبت‌نام (API-first)
+   اول API، در آفلاین fallback به LNS محلی.
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
 (async function () {
 
-  await LNS.ready();
+  if (window.LNS) await LNS.ready();
   const $ = (s) => document.querySelector(s);
   const { toast } = UI;
+  const isPhone = window.LNS ? LNS.isPhone : (v) => /^09\d{9}$/.test(v);
+  const isEmail = window.LNS ? LNS.isEmail : (v) => /.+@.+\..+/.test(v);
 
   /* اگر از قبل وارد شده — برو به پنل */
-  const existing = LNS.me();
+  const existing = await API.me();
   if (existing) {
     location.replace(existing.role === 'admin' ? 'admin.html' : 'dashboard.html');
     return;
@@ -52,6 +55,14 @@
   $('#loginBtn').dataset.label = 'ورود به پنل';
   $('#regBtn').dataset.label = 'ساخت حساب کاربری';
 
+  function goPanel(user) {
+    if (API.mode() === 'offline') toast('حالت آفلاین — با کش محلی وارد شدید.', 'info');
+    setTimeout(() => {
+      if (safeNext) location.href = safeNext;
+      else location.href = user.role === 'admin' ? 'admin.html' : 'dashboard.html';
+    }, 650);
+  }
+
   /* ── ورود ─────────────────────────────────────────────── */
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -63,15 +74,12 @@
 
     const btn = $('#loginBtn');
     busy(btn, true);
-    const res = await LNS.login(ident.value, pass.value);
+    const res = await API.login(ident.value, pass.value);
     busy(btn, false);
     if (!res.ok) { toast(res.error, 'err'); err(pass, ' '); return; }
 
     toast('خوش آمدید ' + res.user.name + ' 👋', 'ok');
-    setTimeout(() => {
-      if (safeNext) location.href = safeNext;
-      else location.href = res.user.role === 'admin' ? 'admin.html' : 'dashboard.html';
-    }, 650);
+    goPanel(res.user);
   });
 
   /* ── سنجش قوت گذرواژه ─────────────────────────────────── */
@@ -94,15 +102,15 @@
           pass = $('#rPass'), pass2 = $('#rPass2');
     let bad = false;
     if (name.value.trim().length < 3) { err(name, 'نام را کامل وارد کنید.'); bad = true; } else err(name);
-    if (!LNS.isPhone(phone.value)) { err(phone, 'شماره موبایل معتبر نیست (۰۹…).'); bad = true; } else err(phone);
-    if (!LNS.isEmail(email.value)) { err(email, 'ایمیل معتبر نیست.'); bad = true; } else err(email);
+    if (!isPhone(phone.value)) { err(phone, 'شماره موبایل معتبر نیست (۰۹…).'); bad = true; } else err(phone);
+    if (!isEmail(email.value)) { err(email, 'ایمیل معتبر نیست.'); bad = true; } else err(email);
     if (!pass.value) { err(pass, 'گذرواژه را وارد کنید.'); bad = true; } else err(pass);
     if (pass.value !== pass2.value) { err(pass2, 'تکرار گذرواژه مطابقت ندارد.'); bad = true; } else err(pass2);
     if (bad) return;
 
     const btn = $('#regBtn');
     busy(btn, true);
-    const res = await LNS.register({
+    const res = await API.register({
       name: name.value, phone: phone.value, email: email.value,
       pass: pass.value, pass2: pass2.value
     });
@@ -112,7 +120,7 @@
     toast('حساب شما ساخته شد! خوش آمدید 🎉', 'ok');
     setTimeout(() => {
       if (safeNext) location.href = safeNext;
-      else location.href = 'dashboard.html';
+      else location.href = res.user.role === 'admin' ? 'admin.html' : 'dashboard.html';
     }, 750);
   });
 })();

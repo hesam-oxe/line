@@ -445,8 +445,10 @@ form.addEventListener('submit', (e) => {
     `شماره تماس: ${phone}\n` +
     `توضیح پروژه: ${desc || '—'}`;
 
-  /* ── ثبت همزمان در صندوق پیام پنل مدیریت (لایه دیتا محلی) ── */
-  if (window.LNS) {
+  /* ── ثبت همزمان در صندوق پیام (API-first، آفلاین → صف) ── */
+  if (window.API) {
+    API.sendMessage({ name, contact: phone, body: desc || 'درخواست مشاوره از فرم اصلی سایت' }).catch(() => {});
+  } else if (window.LNS) {
     try {
       LNS.ready().then(() => {
         LNS.saveMessage({ name, contact: phone, body: desc || 'درخواست مشاوره از فرم اصلی سایت' });
@@ -549,7 +551,18 @@ $$('.faq-q').forEach(btn => {
 });
 
 /* ═══════════ ۱۶.۵) بازتاب وضعیت نشست در دکمه ورود ═══════════ */
-if (window.LNS) {
+if (window.API) {
+  API.me().then((u) => {
+    if (!u) return;
+    const set = (a) => {
+      if (!a) return;
+      a.textContent = u.role === 'admin' ? 'پنل مدیریت' : 'پنل من';
+      a.href = u.role === 'admin' ? 'admin.html' : 'dashboard.html';
+    };
+    set(document.getElementById('authLink'));
+    set(document.getElementById('authLinkMobile'));
+  }).catch(() => {});
+} else if (window.LNS) {
   LNS.ready().then(() => {
     const u = LNS.me();
     if (!u) return;
@@ -562,6 +575,41 @@ if (window.LNS) {
     set(document.getElementById('authLinkMobile'));
   }).catch(() => {});
 }
+
+/* ═══════════ ۱۶.۶) تزریق تماس از CONFIG (فقط مقادیر واقعی) ═══════════ */
+(function injectContact() {
+  try {
+    const c = (window.LNS_CONFIG && window.LNS_CONFIG.CONTACT) || {};
+    const real = (v) => typeof v === 'string' && v && !v.startsWith('TODO_');
+    if (real(c.WHATSAPP)) {
+      document.querySelectorAll('a[href*="wa.me/"]').forEach((a) => {
+        const href = a.getAttribute('href');
+        a.setAttribute('href', href.replace(/wa\.me\/\d+/, 'wa.me/' + c.WHATSAPP));
+      });
+    }
+    if (real(c.PHONE_LINK)) {
+      document.querySelectorAll('a[href^="tel:"]').forEach((a) => {
+        a.setAttribute('href', 'tel:' + c.PHONE_LINK);
+      });
+    }
+    if (real(c.EMAIL)) {
+      document.querySelectorAll('a[href^="mailto:"]').forEach((a) => {
+        a.setAttribute('href', 'mailto:' + c.EMAIL);
+      });
+    }
+  } catch (_) {}
+})();
+
+/* ═══════════ ۱۶.۷) سرویس‌ورکر آفلاین ═══════════ */
+(function registerSW() {
+  try {
+    if (!('serviceWorker' in navigator)) return;
+    if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    });
+  } catch (_) {}
+})();
 
 /* ═══════════ ۱۷) امضای کنسول ═══════════ */
 console.log('%c✦ لاین نوری استار — Linenory-Star EXTREME\nنور، امضای فضای شما.\n۳ صحنه سه‌بعدی · سئوی کامل · امنیت سطح خدا',

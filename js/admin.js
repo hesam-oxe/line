@@ -6,11 +6,12 @@
 
 (async function () {
 
-  await LNS.ready();
+  if (window.LNS) await LNS.ready();
   const { h, money, faNum, faDate, faTime, relTime, toast, badge, openModal } = UI;
 
-  const admin = LNS.requireRole('admin', 'admin.html');
-  if (!admin) return;
+  const admin = await API.me();
+  if (!admin) { location.replace('auth.html?next=' + encodeURIComponent('admin.html')); return; }
+  if (admin.role !== 'admin') { location.replace('auth.html?next='); return; }
 
   const $ = (s) => document.querySelector(s);
   const main = $('#pMain'), nav = $('#pNav');
@@ -30,9 +31,9 @@
     if (!btn) return;
     nav.querySelectorAll('button').forEach(b => b.classList.remove('on'));
     btn.classList.add('on');
-    render(btn.dataset.view);
+    render(btn.dataset.view).catch(() => {});
   });
-  $('#logoutBtn').addEventListener('click', () => { LNS.logout(); location.href = 'auth.html'; });
+  $('#logoutBtn').addEventListener('click', async () => { await API.logout(); location.href = 'auth.html'; });
 
   const head = (t, sub) => h('div', { class: 'p-head' }, [
     h('div', {}, [h('div', { class: 'p-title', text: t }), sub ? h('div', { class: 'p-sub', text: sub }) : null]),
@@ -43,9 +44,19 @@
     hint ? h('small', { class: 'hint', text: hint }) : null
   ]);
 
+  /* ══ داده‌ها (API-first + کش محلی) ══════════════════════ */
+  let D = { users: [], quotes: [], msgs: [], prods: [] };
+  async function loadAll() {
+    try { D.prods = await API.products(); } catch (_) { D.prods = window.LNS ? LNS.products() : []; }
+    try { D.quotes = await API.quotes(); } catch (_) { D.quotes = window.LNS ? LNS.quotes() : []; }
+    try { D.msgs = await API.messages(); } catch (_) { D.msgs = window.LNS ? LNS.messages() : []; }
+    try { D.users = await API.users(); }
+    catch (_) { D.users = window.LNS ? LNS.users() : []; }
+  }
+
   /* ══ داشبورد ════════════════════════════════════════════ */
   function viewDash() {
-    const users = LNS.users(), quotes = LNS.quotes(), msgs = LNS.messages(), prods = LNS.products();
+    const users = D.users, quotes = D.quotes, msgs = D.msgs, prods = D.prods;
     const newQ = quotes.filter(q => q.status === 'new').length;
     const openM = msgs.filter(m => m.status === 'open').length;
 
@@ -100,14 +111,14 @@
 
   /* ══ محصولات (CRUD) ═════════════════════════════════════ */
   function viewProducts() {
-    const list = LNS.products();
+    const list = D.prods;
     const tbl = h('table', { class: 'p-table' }, [
       h('thead', {}, h('tr', {}, [
         'محصول', 'دسته', 'قیمت (متر)', 'موجودی', 'برچسب', 'ویژه', 'عملیات'
       ].map(t => h('th', { text: t })))),
       h('tbody', {}, list.map(p => h('tr', {}, [
         h('td', {}, [h('b', { text: p.name })]),
-        h('td', { text: LNS.CATS[p.cat] || p.cat }),
+        h('td', { text: API.CATS[p.cat] || p.cat }),
         h('td', { text: money(p.price) }),
         h('td', { text: p.stock ? faNum(p.stock) : '—' }),
         h('td', { text: p.badge || '—' }),
@@ -132,11 +143,11 @@
         body: h('p', { text: '«' + p.name + '» برای همیشه از فروشگاه حذف شود؟' }),
         footer: h('div', { class: 'td-actions' }, [
           h('button', { class: 'btn btn-outline', type: 'button', text: 'انصراف', onclick: () => m.close() }),
-          h('button', { class: 'btn btn-primary', type: 'button', text: 'حذف قطعی', onclick: () => {
-            const res = LNS.deleteProduct(p.id);
+          h('button', { class: 'btn btn-primary', type: 'button', text: 'حذف قطعی', onclick: async () => {
+            const res = await API.deleteProduct(p.id);
             m.close();
             if (!res.ok) { toast(res.error, 'err'); return; }
-            toast('محصول حذف شد.', 'ok'); render('products'); counters();
+            toast('محصول حذف شد.', 'ok'); await render('products'); counters();
           } })
         ])
       });
@@ -146,7 +157,7 @@
   function productModal(p) {
     const isNew = !p;
     const nameI = h('input', { type: 'text', maxlength: 80, value: p ? p.name : '', placeholder: 'مثلاً: لاین نوری ۲۲۰ولت تک‌رنگ' });
-    const catS = h('select', {}, Object.entries(LNS.CATS).map(([id, label]) =>
+    const catS = h('select', {}, Object.entries(API.CATS).map(([id, label]) =>
       h('option', { value: id, text: label, selected: p && p.cat === id ? 'selected' : null })
     ));
     const priceI = h('input', { type: 'text', inputmode: 'numeric', maxlength: 12, value: p ? String(p.price) : '', placeholder: 'قیمت هر متر به تومان' });
@@ -185,7 +196,7 @@
     });
 
     async function save() {
-      const res = LNS.saveProduct({
+      const res = await API.saveProduct({
         id: p ? p.id : undefined,
         name: nameI.value, cat: catS.value,
         price: priceI.value, oldPrice: oldI.value,
@@ -200,13 +211,13 @@
       if (!res.ok) { toast(res.error, 'err'); return; }
       m.close();
       toast(isNew ? 'محصول اضافه شد.' : 'تغییرات ذخیره شد.', 'ok');
-      render('products'); counters();
+      await render('products'); counters();
     }
   }
 
   /* ══ استعلام‌ها ═════════════════════════════════════════ */
   function viewQuotes() {
-    const list = LNS.quotes();
+    const list = D.quotes;
     if (!list.length) return h('div', { class: 'empty' }, [
       h('b', { text: 'هنوز استعلامی ثبت نشده' }),
       h('p', { text: 'استعلام‌های مشتریان از فروشگاه اینجا نمایش داده می‌شود.' })
@@ -214,23 +225,23 @@
 
     const body = h('div', {}, [head('استعلام‌های مشتریان', faNum(list.length) + ' درخواست')]);
     list.forEach(q => {
-      const stS = h('select', {}, Object.entries(LNS.Q_STATUS).map(([id, label]) =>
+      const stS = h('select', {}, Object.entries(API.Q_STATUS).map(([id, label]) =>
         h('option', { value: id, text: label, selected: q.status === id ? 'selected' : null })
       ));
       stS.value = q.status;
       const noteI = h('textarea', { maxlength: 400, placeholder: 'پاسخ/توضیح برای مشتری (پیش‌فاکتور، زمان اجرا…)' });
       noteI.value = q.adminNote || '';
-      const saveBtn = h('button', { class: 'btn btn-primary btn-sm', type: 'button', text: 'ذخیره وضعیت', onclick: () => {
-        const res = LNS.setQuoteStatus(q.id, stS.value, noteI.value);
+      const saveBtn = h('button', { class: 'btn btn-primary btn-sm', type: 'button', text: 'ذخیره وضعیت', onclick: async () => {
+        const res = await API.setQuoteStatus(q.id, stS.value, noteI.value);
         if (!res.ok) { toast(res.error, 'err'); return; }
         toast('وضعیت به‌روزرسانی شد — مشتری در پنل خودش می‌بیند.', 'ok');
-        render('quotes'); counters();
+        await render('quotes'); counters();
       } });
 
       body.appendChild(h('div', { class: 'table-wrap' }, h('div', { class: 'modal-body' }, [
         h('div', { class: 'quote-head' }, [
           h('b', { text: q.userName + ' · ' + (q.userPhone || '—') }),
-          badge(LNS.Q_STATUS[q.status], { new: 'gold', review: 'cyan', invoice: 'violet', done: 'green', rejected: 'red' }[q.status] || 'muted')
+          badge(API.Q_STATUS[q.status], { new: 'gold', review: 'cyan', invoice: 'violet', done: 'green', rejected: 'red' }[q.status] || 'muted')
         ]),
         h('table', { class: 'pd-specs' }, q.items.map(it =>
           h('tr', {}, [h('td', { text: it.name }), h('td', { text: faNum(it.qty) + ' متر' })])
@@ -247,7 +258,7 @@
 
   /* ══ پیام‌ها ════════════════════════════════════════════ */
   function viewMsgs() {
-    const list = LNS.messages();
+    const list = D.msgs;
     if (!list.length) return h('div', { class: 'empty' }, [
       h('b', { text: 'صندوق پیام خالی است' }),
       h('p', { text: 'پیام‌های فرم مشاوره صفحه اصلی و پنل کاربران اینجا می‌آید.' })
@@ -257,11 +268,11 @@
     list.forEach(m => {
       const replyI = h('textarea', { maxlength: 600, placeholder: m.reply ? 'ویرایش پاسخ…' : 'پاسخ خود را بنویسید…' });
       replyI.value = m.reply || '';
-      const saveBtn = h('button', { class: 'btn btn-primary btn-sm', type: 'button', text: m.reply ? 'به‌روزرسانی پاسخ' : 'ارسال پاسخ', onclick: () => {
-        const res = LNS.replyMessage(m.id, replyI.value);
+      const saveBtn = h('button', { class: 'btn btn-primary btn-sm', type: 'button', text: m.reply ? 'به‌روزرسانی پاسخ' : 'ارسال پاسخ', onclick: async () => {
+        const res = await API.replyMessage(m.id, replyI.value);
         if (!res.ok) { toast(res.error, 'err'); return; }
-        toast('پاسخ ثبت شد.', 'ok');
-        render('msgs'); counters();
+        toast('پاسخ ثبت شد (محلی).', 'ok');
+        await render('msgs'); counters();
       } });
       body.appendChild(h('div', { class: 'table-wrap' }, h('div', { class: 'modal-body' }, [
         h('div', { class: 'quote-head' }, [
@@ -282,7 +293,7 @@
 
   /* ══ کاربران ════════════════════════════════════════════ */
   function viewUsers() {
-    const list = LNS.users();
+    const list = D.users;
     const tbl = h('table', { class: 'p-table' }, [
       h('thead', {}, h('tr', {}, ['نام', 'موبایل', 'ایمیل', 'نقش', 'وضعیت', 'عضویت', 'عملیات'].map(t => h('th', { text: t })))),
       h('tbody', {}, list.map(u => {
@@ -307,21 +318,34 @@
     ]);
 
     function setSt(u, s) {
-      const res = LNS.setUserStatus(u.id, s);
-      if (!res.ok) { toast(res.error, 'err'); return; }
-      toast(s === 'blocked' ? 'کاربر مسدود شد.' : 'کاربر فعال شد.', 'ok');
-      render('users'); counters();
+      opWithFallback(
+        () => API.setUserStatus(u.id, s),
+        () => (window.LNS ? LNS.setUserStatus(u.id, s) : { ok: false, error: 'آفلاین.' }),
+        s === 'blocked' ? 'کاربر مسدود شد.' : 'کاربر فعال شد.'
+      );
     }
     function setRole(u, r) {
-      const res = LNS.setUserRole(u.id, r);
-      if (!res.ok) { toast(res.error, 'err'); return; }
-      toast(r === 'admin' ? 'کاربر ارتقا یافت.' : 'نقش به مشتری تغییر کرد.', 'ok');
-      render('users');
+      opWithFallback(
+        () => API.setUserRole(u.id, r),
+        () => (window.LNS ? LNS.setUserRole(u.id, r) : { ok: false, error: 'آفلاین.' }),
+        r === 'admin' ? 'کاربر ارتقا یافت.' : 'نقش به مشتری تغییر کرد.'
+      );
+    }
+    async function opWithFallback(apiCall, localCall, okMsg) {
+      try {
+        await apiCall();
+      } catch (e) {
+        const res = localCall();
+        if (!res.ok) { toast(res.error, 'err'); return; }
+      }
+      toast(okMsg, 'ok');
+      await render('users'); counters();
     }
   }
 
-  /* ══ تنظیمات ════════════════════════════════════════════ */
+  /* ══ تنظیمات (محلی تا فاز بعد — endpoint بک‌اند ندارد) ══ */
   function viewSettings() {
+    if (!window.LNS) return h('div', { class: 'empty' }, [h('b', { text: 'آفلاین' })]);
     const s = LNS.settings();
     const phoneI = h('input', { type: 'tel', inputmode: 'tel', maxlength: 16, value: s.phone });
     const waI = h('input', { type: 'tel', inputmode: 'tel', maxlength: 16, value: s.phone });
@@ -380,20 +404,22 @@
   /* ── رندر ─────────────────────────────────────────────── */
   const views = { dash: viewDash, products: viewProducts, quotes: viewQuotes, msgs: viewMsgs, users: viewUsers, settings: viewSettings };
 
-  function render(view) {
+  async function render(view) {
+    await loadAll();
     main.textContent = '';
     main.appendChild(views[view]());
   }
 
   function counters() {
-    set('#cProducts', LNS.products().length);
-    set('#cQuotes', LNS.quotes().filter(q => q.status === 'new').length);
-    set('#cMsgs', LNS.messages().filter(m => m.status === 'open').length);
-    set('#cUsers', LNS.users().length);
+    set('#cProducts', D.prods.length);
+    set('#cQuotes', D.quotes.filter(q => q.status === 'new').length);
+    set('#cMsgs', D.msgs.filter(m => m.status === 'open').length);
+    set('#cUsers', D.users.length);
     function set(sel, n) { const el = $(sel); el.hidden = !n; el.textContent = faNum(n); }
   }
 
-  render('dash');
+  await render('dash');
   counters();
-  LNS.onSync(() => counters());
+  if (window.LNS) LNS.onSync(() => counters());
+  API.onMode(() => counters());
 })();
