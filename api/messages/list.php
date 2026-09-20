@@ -1,15 +1,24 @@
 <?php
-/* ═══ لاین نوری استار — استاب: فهرست پیام‌ها (/messages/list) ═══
-   وضعیت فاز ۲: فقط ۵۰۱ Not Implemented. منطق در فاز ۳.
-   فاز ۳: صندوق ورودی کاربر/ادمین + پرچم read.
-   امنیت فاز ۳: PDO prepared + CSRF + rate-limit + نشست چرخشی. */
+/* ═══ فهرست پیام‌ها: مال خود؛ ادمین همه ═══ */
 declare(strict_types=1);
 
-header('Content-Type: application/json; charset=utf-8');
-http_response_code(501);
-echo json_encode([
-    'ok' => false,
-    'error' => 'پیاده‌سازی نشده (Not Implemented).',
-    'endpoint' => '/messages/list',
-    'phase' => 2,
-], JSON_UNESCAPED_UNICODE);
+require_once __DIR__ . '/../lib/response.php';
+require_once __DIR__ . '/../lib/validate.php';
+require_once __DIR__ . '/../lib/db.php';
+require_once __DIR__ . '/../lib/auth.php';
+
+lns_method(['GET']);
+$u = lns_require_auth();
+
+$limit = lns_int($_GET['limit'] ?? 50, 1, 100) ?? 50;
+$offset = lns_int($_GET['offset'] ?? 0, 0, 100000) ?? 0;
+
+$pdo = lns_pdo();
+if (($u['role'] ?? '') === 'admin') {
+    $st = $pdo->prepare('SELECT * FROM messages ORDER BY created_at DESC LIMIT ' . $limit . ' OFFSET ' . $offset);
+    $st->execute();
+} else {
+    $st = $pdo->prepare('SELECT * FROM messages WHERE from_user = ? OR to_user = ? ORDER BY created_at DESC LIMIT ' . $limit . ' OFFSET ' . $offset);
+    $st->execute([$u['id'], $u['id']]);
+}
+lns_ok(['items' => $st->fetchAll()]);

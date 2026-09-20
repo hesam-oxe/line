@@ -1,4 +1,7 @@
 server.log
 api/config.php
+api/.data.sqlite
+api/.data.sqlite-wal
+api/.data.sqlite-shm
 .env
 *.log
