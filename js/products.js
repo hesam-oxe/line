@@ -19,8 +19,26 @@
   let cart = loadCart();                    /* {productId: qty} */
   const user = await API.me();
   let allProducts = [];
-  try { allProducts = await API.products(); }
-  catch (_) { allProducts = []; }
+  let loadError = null;
+
+  /* اسکلت بارگذاری */
+  function skeletons() {
+    grid.textContent = '';
+    for (let i = 0; i < 6; i++) grid.appendChild(h('div', { class: 'skel', 'aria-hidden': 'true' }));
+    countEl.textContent = 'در حال بارگذاری…';
+  }
+
+  async function loadProducts() {
+    skeletons();
+    try {
+      allProducts = await API.products();
+      loadError = null;
+    } catch (e) {
+      loadError = e;
+      allProducts = [];
+    }
+  }
+  await loadProducts();
 
   function loadCart() {
     try { return JSON.parse(localStorage.getItem(CART_KEY)) || {}; }
@@ -301,6 +319,22 @@
 
   /* ── رندر گرید ────────────────────────────────────────── */
   function render() {
+    if (loadError && !allProducts.length) {
+      grid.textContent = '';
+      countEl.textContent = 'خطا در بارگذاری';
+      const retry = h('button', {
+        class: 'btn btn-primary', type: 'button', text: 'تلاش مجدد',
+        onclick: async () => { await loadProducts(); render(); syncQuoteBar(); }
+      });
+      const banner = h('div', { class: 'err-banner', role: 'alert' }, [
+        h('b', { text: 'ارتباط با سرور برقرار نشد' }),
+        h('p', { text: 'اتصال اینترنت را بررسی کنید و دوباره تلاش کنید.' }),
+        retry
+      ]);
+      banner.style.setProperty('grid-column', '1 / -1');
+      grid.append(banner);
+      return;
+    }
     const list = filtered();
     countEl.textContent = faNum(list.length) + ' محصول';
     grid.textContent = '';

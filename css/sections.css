@@ -182,6 +182,29 @@ input[type="range"]::-moz-range-thumb{
   font-weight:800; color:var(--cyan);
 }
 
+/* کانفیگوراتور طول نوار */
+.sim-length{
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  flex-basis:100%;
+  padding-top:6px;
+  border-top:1px dashed var(--brd);
+}
+.sim-length > span{ font-weight:700; font-size:.9rem; white-space:nowrap; }
+.len-btn{
+  padding:9px 18px; border-radius:12px;
+  border:1px solid var(--brd); background:var(--glass);
+  font-weight:700; font-size:.85rem;
+  transition:transform .25s, border-color .3s, background .3s, box-shadow .3s;
+}
+.len-btn:hover{ transform:translateY(-2px); }
+.len-btn.active{
+  border-color:rgba(255,184,0,.6);
+  background:rgba(255,184,0,.1);
+  box-shadow:0 0 0 1px rgba(255,184,0,.35), 0 12px 30px -12px rgba(255,184,0,.5);
+}
+.sim-quote{ flex-basis:100%; color:var(--muted); font-size:.88rem; }
+.sim-quote b{ color:var(--gold); }
+
 /* ═══════════ ۴) خدمات ═══════════ */
 
 .services-grid{ grid-template-columns:repeat(4, 1fr); }

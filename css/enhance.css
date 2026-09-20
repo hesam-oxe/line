@@ -355,3 +355,44 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
   .marquee-chunk{ font-size:.9rem; }
   .marquee-chunk i{ margin:0 14px; }
 }
+
+/* ═══ تم روشن/تیره: دکمه تغییر ═══ */
+.theme-toggle{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:38px; height:38px; border-radius:12px; flex:none;
+  border:1px solid var(--brd); background:var(--glass);
+  transition:transform .25s ease, border-color .25s ease;
+}
+.theme-toggle:hover{ transform:translateY(-2px); border-color:var(--gold); }
+.theme-toggle svg{ width:20px; height:20px; }
+:root[data-theme="light"] .theme-toggle svg{ color:var(--gold); }
+
+/* ═══ اسکلت بارگذاری ═══ */
+.skel{
+  border-radius:var(--radius); border:1px solid var(--brd);
+  background:var(--glass); min-height:220px; position:relative; overflow:hidden;
+}
+.skel::after{
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(100deg, transparent 20%, rgba(255,255,255,.09) 50%, transparent 80%);
+  animation:skel-shine 1.4s infinite;
+}
+:root[data-theme="light"] .skel::after{
+  background:linear-gradient(100deg, transparent 20%, rgba(15,23,42,.08) 50%, transparent 80%);
+}
+@keyframes skel-shine{ from{ transform:translateX(100%);} to{ transform:translateX(-100%);} }
+@media (prefers-reduced-motion: reduce){ .skel::after{ animation:none; } }
+
+/* ═══ بنر خطا + تلاش مجدد ═══ */
+.err-banner{
+  border:1px solid rgba(248,113,113,.4); background:rgba(248,113,113,.08);
+  border-radius:var(--radius); padding:18px 20px; text-align:center;
+  display:grid; gap:10px; justify-items:center;
+}
+.err-banner b{ font-size:1rem; }
+.err-banner p{ color:var(--muted); font-size:.88rem; }
+
+/* ═══ کانوس سه‌بعدی: گذار نرم تعویض فضا ═══ */
+#studioCanvas{ transition:opacity .35s ease; }
+#studioCanvas.room-fade{ opacity:.15; }
+@media (prefers-reduced-motion: reduce){ #studioCanvas{ transition:none; } }

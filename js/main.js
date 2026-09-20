@@ -244,8 +244,9 @@ function bind3D() {
 
     $$('.sim-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        $$('.sim-btn').forEach(b => b.classList.remove('active'));
+        $$('.sim-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
         btn.classList.add('active');
+        btn.setAttribute('aria-pressed', 'true');
         const mode = btn.dataset.mode;
         sim.setColor(mode);
         kelvinValue.textContent = btn.dataset.k;
@@ -255,6 +256,30 @@ function bind3D() {
         readout.style.textShadow = `0 0 22px ${g.s}`;
       });
     });
+
+    /* کانفیگوراتور طول نوار + برآورد قیمت/مصرف */
+    const lenPrice = $('#lenPrice');
+    const lenPower = $('#lenPower');
+    const fmtToman = (n) => Number(n).toLocaleString('fa-IR') + ' تومان';
+    const updateQuote = (m) => {
+      try {
+        const q = sim.quote ? sim.quote(m) : { meters: m, price: m * 185000, power: m * 8 };
+        if (lenPrice) lenPrice.textContent = fmtToman(q.price);
+        if (lenPower) lenPower.textContent = faNum(q.power) + ' وات';
+      } catch (_) {}
+    };
+    $$('.len-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        $$('.len-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
+        btn.classList.add('active');
+        btn.setAttribute('aria-pressed', 'true');
+        const m = Number(btn.dataset.meters) || 3;
+        if (sim.setLength) sim.setLength(m);
+        updateQuote(m);
+        toast(`نوار ${faNum(m)} متری فعال شد.`, 'ok');
+      });
+    });
+    updateQuote(3);
 
     /* اسلایدر شدت نور */
     const slider = $('#brightness');
@@ -269,14 +294,35 @@ function bind3D() {
   /* استودیوی سه‌بعدی: تعویض فضا */
   const studio = window.Linenory3D && window.Linenory3D.studio;
   if (studio) {
-    $$('.studio-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        $$('.studio-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        studio.setRoom(btn.dataset.room);
-        toast(`فضای «${btn.dataset.name}» فعال شد — بکشید تا بچرخد.`, 'ok');
-      });
+    const roomBtns = $$('.studio-btn');
+    const pickRoom = (btn) => {
+      roomBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
+      btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
+      studio.setRoom(btn.dataset.room);
+      toast(`فضای «${btn.dataset.name}» فعال شد — بکشید تا بچرخد.`, 'ok');
+    };
+    roomBtns.forEach(btn => {
+      btn.addEventListener('click', () => pickRoom(btn));
     });
+    /* سوایپ موبایل بین فضاها */
+    const studioCanvas = $('#studioCanvas');
+    if (studioCanvas) {
+      let sx = null;
+      studioCanvas.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) sx = e.touches[0].clientX;
+      }, { passive: true });
+      studioCanvas.addEventListener('touchend', (e) => {
+        if (sx === null) return;
+        const dx = e.changedTouches[0].clientX - sx;
+        sx = null;
+        if (Math.abs(dx) < 48) return;
+        const i = roomBtns.findIndex(b => b.classList.contains('active'));
+        /* RTL: سوایپ به چپ = بعدی */
+        const n = (i + (dx < 0 ? 1 : roomBtns.length - 1)) % roomBtns.length;
+        pickRoom(roomBtns[n]);
+      }, { passive: true });
+    }
   }
 }
 if (window.Linenory3D && window.Linenory3D.hero) bind3D();
