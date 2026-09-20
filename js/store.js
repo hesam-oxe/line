@@ -1,13 +1,15 @@
 /* ═══════════════════════════════════════════════════════════
    لاین نوری استار — لایه دیتا و احراز هویت (سمت کلاینت)
    معماری: SharedPreferences مبتنی بر localStorage با آماده‌سازی
-   برای مهاجرت آینده به بک‌اند (Supabase/Firebase/REST)
-   امنیت: هش SHA-256 نمک‌دار (WebCrypto) · قفل‌شدگی تلاش · نشست توکنی
+   برای مهاجرت آینده به بک‌اند (PHP/MySQL REST در /api/)
+   امنیت: PBKDF2-SHA256 با ۱۰۰هزار تکرار (WebCrypto) · قفل‌شدگی تلاش · نشست توکنی
+   نکته: هیچ گذرواژه‌ای در کد هاردکد نیست. ادمین اولیه در اولین
+   ثبت‌نام ساخته می‌شود (needsSetup). تنظیمات از js/config.js می‌آید.
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
 (function () {
-  const V = 1;                                    /* نسخه اسکیما — برای seed مجدد خودکار */
+  const V = 2;                                    /* نسخه اسکیما — v2: مهاجرت به PBKDF2 + حذف سید ادمین */
   const K = {
     users:    'lns:v' + V + ':users',
     session:  'lns:v' + V + ':session',
@@ -55,12 +57,55 @@
   const cleanMulti = (s, max) => String(s == null ? '' : s)
     .replace(/[<>`\\{}$]/g, '').replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim().slice(0, max || 1000);
 
-  /* هش گذرواژه — SHA-256(نمک::گذرواژه) */
+  /* هش گذرواژه — PBKDF2-SHA256 با ۱۰۰هزار تکرار (WebCrypto) */
+  const PBKDF2_ITERATIONS = 100000;
+
+  const bytesToHex = (bytes) =>
+    Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+
+  const hexToBytes = (hex) => {
+    const s = String(hex || '');
+    const out = new Uint8Array(Math.floor(s.length / 2));
+    for (let i = 0; i < out.length; i++) {
+      out[i] = parseInt(s.substr(i * 2, 2), 16) || 0;
+    }
+    return out;
+  };
+
   async function hashPass(pass, salt) {
-    if (!crypto.subtle) throw new Error('SECURE_CONTEXT_REQUIRED');
-    const data = new TextEncoder().encode(salt + '::' + pass);
+    if (!crypto.subtle || !crypto.subtle.importKey) throw new Error('SECURE_CONTEXT_REQUIRED');
+    const enc = new TextEncoder();
+    const key = await crypto.subtle.importKey('raw', enc.encode(String(pass || '')), 'PBKDF2', false, ['deriveBits']);
+    const bits = await crypto.subtle.deriveBits(
+      { name: 'PBKDF2', salt: hexToBytes(salt), iterations: PBKDF2_ITERATIONS, hash: 'SHA-256' },
+      key,
+      256
+    );
+    return bytesToHex(new Uint8Array(bits));
+  }
+
+  /* اعتبارسنجی گذرواژه قدیمی تک‌ضربه‌ای SHA-256 — فقط برای مهاجرت و ارتقای خودکار */
+  async function legacySha256(pass, salt) {
+    const data = new TextEncoder().encode(salt + '::' + String(pass || ''));
     const buf = await crypto.subtle.digest('SHA-256', data);
-    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    return bytesToHex(new Uint8Array(buf));
+  }
+
+  /* بررسی گذرواژه با پشتیبانی از هر دو فرمت + ارتقا به PBKDF2 */
+  async function verifyAndUpgrade(user, pass) {
+    const algo = user.algo || 'sha256-legacy';
+    if (algo === 'pbkdf2-sha256-100k') {
+      const h = await hashPass(pass, user.salt);
+      return h === user.passHash;
+    }
+    const h = await legacySha256(pass, user.salt);
+    if (h !== user.passHash) return false;
+    /* ارتقای خودکار به PBKDF2 در اولین ورود موفق */
+    const newSalt = randToken();
+    user.salt = newSalt;
+    user.passHash = await hashPass(pass, newSalt);
+    user.algo = 'pbkdf2-sha256-100k';
+    return true;
   }
 
   const randToken = () => {
@@ -102,11 +147,13 @@
     { name: 'ریموت کنترل RGB لمسی + بلوتوث',  cat: 'driver',  price: 260000, oldPrice: 320000, watt: '—',     ip: '—',    volt: '12-24V', colors: [], warranty: 12, stock: 150, badge: 'جدید', featured: false, glow: '#8B5CF6', desc: 'چرخ رنگ لمسی، دی‌مر و زمان‌سنج — کنترل همزمان از ریموت و اپلیکیشن موبایل با بلوتوث.' }
   ];
 
+  const cfgContact = (typeof window !== 'undefined' && window.LNS_CONFIG && window.LNS_CONFIG.CONTACT) || {};
+
   const SEED_SETTINGS = {
-    phone: '09123456789',
-    whatsapp: '989123456789',
-    email: 'info@linenory-star.ir',
-    address: 'تهران، خیابان ولیعصر، برج نور، طبقه ۱۲',
+    phone: cfgContact.PHONE_DISPLAY || 'TODO_PHONE_DISPLAY__example__09123456789',
+    whatsapp: cfgContact.WHATSAPP || 'TODO_WHATSAPP__example__989123456789',
+    email: cfgContact.EMAIL || 'TODO_EMAIL__example__info@example.ir',
+    address: cfgContact.ADDRESS || 'TODO_ADDRESS__example__تهران',
     instagram: '',
     updatedAt: 0
   };
@@ -120,16 +167,16 @@
       const meta = read(K.meta, null);
       if (meta && meta.v === V) return;
 
-      if (!read(K.users, null) || !read(K.users, []).some(u => u.role === 'admin')) {
-        const salt = randToken();
-        const admin = {
-          id: uid(), name: 'مدیریت لاین نوری', phone: '', email: 'admin@linenory-star.ir',
-          salt, role: 'admin', status: 'active',
-          passHash: await hashPass('Lns@1404', salt),
-          createdAt: Date.now(), lastLogin: 0
-        };
-        write(K.users, [admin]);
+      /* مهاجرت از v1: کاربران و نشست‌های SHA-256 قدیمی را دور می‌ریزیم
+         (هش ضعیف) ولی محصولات/استعلام‌ها/پیام‌ها/تنظیمات حفظ می‌شود. */
+      if (meta && meta.v === 1) {
+        try { localStorage.removeItem(K.users); } catch (_) {}
+        try { localStorage.removeItem(K.session); } catch (_) {}
+        try { localStorage.removeItem(K.guard); } catch (_) {}
       }
+
+      /* هیچ ادمین پیش‌فرض با گذرواژه شناخته‌شده ساخته نمی‌شود.
+         اولین ثبت‌نام، ادمین می‌شود (needsSetup). */
       if (!read(K.products, null)) {
         write(K.products, SEED_PRODUCTS.map(p => Object.assign({ id: uid(), createdAt: Date.now() }, p)));
       }
@@ -138,6 +185,7 @@
       write(K.msgs, read(K.msgs, []));
       write(K.favs, read(K.favs, {}));
       write(K.guard, read(K.guard, {}));
+      if (!read(K.users, null)) write(K.users, []);
       write(K.meta, { v: V, seededAt: Date.now() });
     })();
     return _ready;
@@ -185,7 +233,7 @@
   }
 
   function publicUser(u) {
-    const { passHash, salt, ...rest } = u;
+    const { passHash, salt, algo, ...rest } = u;
     return rest;
   }
 
@@ -201,6 +249,12 @@
   /* ── API عمومی ────────────────────────────────────────── */
 
   const LNS = { CATS, ready, me, logout, uid, toEn, normPhone, normMail, isPhone, isEmail, clean, cleanMulti };
+
+  /* آیا راه‌اندازی اولیه لازم است؟ (هیچ ادمینی وجود ندارد) */
+  LNS.needsSetup = function () {
+    const users = read(K.users, []);
+    return !users.some((u) => u.role === 'admin');
+  };
 
   /* ثبت‌نام */
   LNS.register = async function ({ name, phone, email, pass, pass2 }) {
@@ -220,10 +274,12 @@
     if (users.some(u => u.phone === phone)) return { ok: false, error: 'این شماره موبایل قبلاً ثبت شده است.' };
 
     const salt = randToken();
+    const isFirstAdmin = !users.some((u) => u.role === 'admin');
     const user = {
       id: uid(), name, phone, email, salt,
       passHash: await hashPass(pass, salt),
-      role: 'customer', status: 'active',
+      algo: 'pbkdf2-sha256-100k',
+      role: isFirstAdmin ? 'admin' : 'customer', status: 'active',
       createdAt: Date.now(), lastLogin: 0
     };
     users.push(user);
@@ -251,8 +307,10 @@
     if (!user) return fail('ایمیل/شماره یا گذرواژه اشتباه است.');
     if (user.status === 'blocked') return fail('این حساب مسدود شده است. با پشتیبانی تماس بگیرید.');
 
-    const h = await hashPass(String(pass || ''), user.salt);
-    if (h !== user.passHash) return fail('ایمیل/شماره یا گذرواژه اشتباه است.');
+    const okPass = await verifyAndUpgrade(user, String(pass || ''));
+    if (!okPass) return fail('ایمیل/شماره یا گذرواژه اشتباه است.');
+    /* ذخیره ارتقای هش قدیمی به PBKDF2 */
+    try { write(K.users, users); } catch (_) {}
 
     guardClear(key);
     startSession(user);
@@ -455,11 +513,13 @@
     if (prob) return { ok: false, error: prob };
     const users = read(K.users, []);
     const t = users.find(x => x.id === id);
-    const curHash = await hashPass(String(current || ''), t.salt);
-    if (curHash !== t.passHash) return { ok: false, error: 'گذرواژه فعلی اشتباه است.' };
+    if (!t) return { ok: false, error: 'کاربر یافت نشد.' };
+    const okCur = await verifyAndUpgrade(t, String(current || ''));
+    if (!okCur) return { ok: false, error: 'گذرواژه فعلی اشتباه است.' };
     if (String(next) === String(current)) return { ok: false, error: 'گذرواژه جدید باید متفاوت باشد.' };
     t.salt = randToken();
     t.passHash = await hashPass(next, t.salt);
+    t.algo = 'pbkdf2-sha256-100k';
     write(K.users, users);
     return { ok: true };
   };

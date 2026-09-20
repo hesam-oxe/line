@@ -11,8 +11,8 @@ const $  = (s, c = document) => c.querySelector(s);
 const $$ = (s, c = document) => [...c.querySelectorAll(s)];
 const faNum = (n) => Number(n).toLocaleString('fa-IR');
 
-/* شماره واتساپ — در نسخه نهایی جایگزین شود */
-const WHATSAPP = '989123456789';
+/* شماره واتساپ — از js/config.js می‌آید (TODO را جایگزین کنید) */
+const WHATSAPP = (typeof window !== 'undefined' && window.LNS_CONFIG && window.LNS_CONFIG.CONTACT && window.LNS_CONFIG.CONTACT.WHATSAPP) || 'TODO_WHATSAPP__example__989123456789';
 
 /* محیط */
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;

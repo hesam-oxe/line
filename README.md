@@ -2,8 +2,8 @@
 
 > **نور، امضای فضای شما** — وب‌سایت رسمی طراحی، تأمین و اجرای سیستم‌های لاین نوری LED
 
-لندینگ تک‌صفحه‌ای سینمایی با **۳ صحنه‌ی سه‌بعدی زنده**، شبیه‌ساز رنگ نور، استودیوی تعاملی فضاها،
-معماری کامل RTL فارسی و سطح امنیت و سئوی «سطح خدا».
+لندینگ سینمایی با **۳ صحنه‌ی سه‌بعدی زنده**، شبیه‌ساز رنگ نور، استودیوی تعاملی فضاها،
+**فروشگاه کامل + پنل ادمین + پنل کاربر**، معماری کامل RTL فارسی و سطح امنیت و سئوی «سطح خدا».
 
 **🔗 نسخه زنده:** https://hesam-oxe.github.io/line/
 
@@ -30,7 +30,21 @@
 - **لایت‌باکس** گالری با ناوبری کیبورد (سازگار با RTL)، توست‌های شیشه‌ای، دکمه بازگشت به بالا با حلقه پیشرفت
 - احترام کامل به `prefers-reduced-motion` + فالبک بدون جاوااسکریپت (`noscript.css`)
 
-### 🔐 امنیت — سطح خدا
+### 🛒 فروشگاه + پنل‌ها
+- **فروشگاه** (`products.html`): ۱۲ محصول seed در ۶ دسته (تک‌رنگ/RGB/RGBW/COB/پروفیل/درایور)،
+  فیلتر دسته، جستجو، مرتب‌سازی (محبوب/ارزان/گران/تخفیف)، سبد استعلام، علاقه‌مندی، اسکیمای محصول
+- **احراز هویت** (`auth.html`): ثبت‌نام/ورود با ایمیل یا موبایل ایرانی، تب لاگین/ثبت‌نام، `next` امن
+- **پنل کاربر** (`dashboard.html`): داشبورد، استعلام‌ها/پیش‌فاکتورها، پیام‌ها، علاقه‌مندی‌ها، پروفایل، تغییر گذرواژه
+- **پنل مدیریت** (`admin.html`): داشبورد + نمودار ۷ روزه، CRUD محصولات، مدیریت استعلام‌ها
+  (`new/review/invoice/done/rejected`)، صندوق پیام + پاسخ، کاربران (مسدود/نقش)، تنظیمات سایت
+- داده‌ها در حالت دمو در `localStorage` با کلید `lns:v2:*` + همگام‌سازی بین تب‌ها (`storage` event)
+
+### 🔐 امنیت
+- **بدون گذرواژه هاردکدشده**: ادمین پیش‌فرض با رمز شناخته‌شده وجود ندارد؛
+  اولین ثبت‌نام ادمین می‌شود (`LNS.needsSetup()` در `js/store.js`)
+- **PBKDF2-SHA256 با ۱۰۰هزار تکرار** (WebCrypto) در `js/store.js:59`؛
+  هش‌های قدیمی SHA-256 تک‌ضربه‌ای در اولین ورود موفق به‌صورت خودکار ارتقا می‌یابند
+- قفل تلاش ورود (۵ تلاش → ۵ دقیقه)، نشست توکنی ۷ روزه، اعتبارسنجی موبایل/ایمیل، سانیتایز XSS
 - **CSP سخت‌گیرانه** (`default-src 'self'`, بدون هیچ inline script/style) + `worker-src` و `manifest-src`
 - **Permissions-Policy کامل**: قطع دسترسی دوربین/میکروفون/جی‌پی‌اس/سنسورها و FLoC (`interest-cohort`)
 - **Frame-Bust** در JS برای مقابله با clickjacking
@@ -39,6 +53,7 @@
 - همه لینک‌های خارجی با `rel="noopener noreferrer"` + متای `referrer`
 - `_headers` کامل برای مهاجرت به Cloudflare/Netlify: HSTS preload، X-Frame-Options DENY،
   nosniff، COOP، frame-ancestors 'none'، Permissions-Policy سروری
+- ⚠️ حالت `localStorage` فقط دموی فرانت‌اند است؛ برای production باید به `/api/` (PHP + MySQL) مهاجرت شود
 
 ### 🚀 سئو — مافوق قوی
 - متادیتای کامل: Title، Description، Canonical، کلمات کلیدی گسترده، **جئو‌تگ‌های محلی** (تهران)
@@ -57,7 +72,11 @@
 
 ```
 line/
-├── index.html              ← صفحه اصلی (۱۴ بخش + ۵ اسکیمای JSON-LD)
+├── index.html              ← صفحه اصلی (۱۴ بخش + JSON-LD)
+├── products.html           ← فروشگاه (فیلتر/جستجو/سبد استعلام)
+├── auth.html               ← ورود/ثبت‌نام
+├── admin.html              ← پنل مدیریت
+├── dashboard.html          ← پنل کاربر
 ├── 404.html                ← صفحه ۴۰۴ سفارشی
 ├── robots.txt · sitemap.xml
 ├── manifest.webmanifest    ← PWA + میان‌برهای سریع
@@ -66,18 +85,28 @@ line/
 │   ├── base.css            ← تم پایه: پالت، گلس، دکمه‌ها، هدر، هیرو
 │   ├── sections.css        ← شبیه‌ساز، خدمات، محصولات، استودیو، مراحل، نظرات، سوالات، فوتر
 │   ├── enhance.css         ← لایه EXTREME: پری‌لودر، کرسر، مارکی، توست
+│   ├── products.css        ← فروشگاه و کارت محصول
+│   ├── panels.css          ← پنل‌ها و فرم‌ها
 │   └── noscript.css        ← فالبک بدون JS
 ├── js/
+│   ├── config.js           ← پیکربندی مرکزی (TODOها را جایگزین کنید)
 │   ├── main.js             ← هسته تعاملی + FAQ + فریم‌باست امنیتی
 │   ├── three-scene.js      ← ۳ صحنه Three.js (ماژول ES)
+│   ├── store.js            ← لایه دیتا + PBKDF2 + نشست (v2)
+│   ├── auth.js             ← منطق ورود/ثبت‌نام
+│   ├── products.js         ← منطق فروشگاه
+│   ├── admin.js            ← پنل مدیریت
+│   ├── dashboard.js        ← پنل کاربر
+│   ├── ui.js               ← ابزار امن UI (textContent)
 │   └── vendor/             ← three.module.js + addons + gsap (محلی)
+├── api/                    ← بک‌اند PHP + MySQL (فاز ۲ به بعد)
 └── assets/
     ├── favicon.svg · fonts/Vazirmatn-Variable.woff2
     ├── icons/              ← PWA + apple-touch
     └── img/og-cover.jpg    ← کاور شبکه‌های اجتماعی
 ```
 
-## 🗺 بخش‌های صفحه (۱۴)
+## 🗺 بخش‌های صفحه اصلی (۱۴)
 
 | # | بخش | توضیح |
 |---|-----|-------|
@@ -100,16 +129,32 @@ line/
 
 | مورد | محل تغییر |
 |---|---|
-| شماره واتساپ | ثابت `WHATSAPP` در `js/main.js` + لینک‌های `wa.me` در `index.html` |
-| شماره تلفن نمایشی | جستجوی `۰۹۱۲ ۱۲۳ ۴۵۶۷` در `index.html` |
-| ایمیل و آدرس | بخش فوتر در `index.html` + JSON-LD |
+| واتساپ/تلفن/ایمیل/دامنه | `js/config.js` (TODOها) + تنظیمات پنل ادمین |
+| شماره تلفن نمایشی | `js/config.js` + بخش فوتر در `index.html` |
 | رنگ تم | متغیرهای `:root` در `css/base.css` |
 | شدت بلوم و تعداد خطوط نور | `js/three-scene.js` |
 | فضاهای استودیو | تابع `initStudio` در `js/three-scene.js` |
+| دسته‌ها و محصولات seed | `SEED_PRODUCTS` و `CATS` در `js/store.js` |
+
+## 🧪 تست محلی
+
+```bash
+cd /sec/root/line
+python3 -m http.server 8000
+# http://localhost:8000/index.html
+# http://localhost:8000/products.html
+# http://localhost:8000/auth.html
+```
+
+بک‌اند (از فاز ۲):
+
+```bash
+php -S localhost:8001 -t api
+```
 
 ## 🛠 تکنولوژی
 
-`HTML5` · `CSS3` (Glassmorphism + Custom Properties) · `Vanilla JS` · `Three.js 0.160` (ES Modules — local vendored) · `GLSL Shaders` · `GSAP 3.12 + ScrollTrigger` · `Vazirmatn Variable Font`
+`HTML5` · `CSS3` (Glassmorphism + Custom Properties) · `Vanilla JS` · `Three.js 0.160` (ES Modules — local vendored) · `GLSL Shaders` · `GSAP 3.12 + ScrollTrigger` · `Vazirmatn Variable Font` · `WebCrypto PBKDF2` · `PHP 8 + MySQL` (بک‌اند، فاز ۲ به بعد)
 
 ---
 
