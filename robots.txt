@@ -1,8 +1,9 @@
-# لاین نوری استار — اجازه کامل خزیدن (به‌جز پنل‌های خصوصی)
+# لاین نوری استار — robots.txt
 User-agent: *
 Allow: /
 Disallow: /auth.html
 Disallow: /dashboard.html
 Disallow: /admin.html
+Disallow: /api/
 
 Sitemap: https://hesam-oxe.github.io/line/sitemap.xml
